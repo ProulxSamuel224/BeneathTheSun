@@ -27,5 +27,8 @@ public:
 	int32 CorridorAmount = 0;
 
 	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = "General", AdvancedDisplay)
-	float CorridorWidth = 10.0f;
+	FVector CorridorOffset;
+
+	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = "General", AdvancedDisplay)
+	FVector InitialPosition = FVector(0, 0, 100);
 };

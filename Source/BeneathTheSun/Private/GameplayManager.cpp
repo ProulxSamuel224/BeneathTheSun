@@ -20,13 +20,17 @@ void UGameplayManager::SpawnCorridor(const FVector InPosition)
 {
 	const UGameplaySettings* GameplaySettings = GetDefault<UGameplaySettings>();
 
-	const FVector& Position = InPosition;
 	UWorld* World = GetWorld();
 
 	if (IsValid(World))
 	{
-		const FActorSpawnParameters SpawnParams;
-		
-		World->SpawnActor<AACorridor>(GameplaySettings->Corridor, Position, FRotator::ZeroRotator, SpawnParams);
+		for (int i = 0; i < GameplaySettings->CorridorAmount; i++)
+		{
+			
+			const FActorSpawnParameters SpawnParams;
+
+			FVector SpawnPosition = InPosition + GameplaySettings->InitialPosition + (GameplaySettings->CorridorOffset*i);
+			World->SpawnActor<AACorridor>(GameplaySettings->Corridor, SpawnPosition, FRotator::ZeroRotator, SpawnParams);
+		}
 	}
 }
