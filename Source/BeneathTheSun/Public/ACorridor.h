@@ -15,8 +15,25 @@ public:
 	// Sets default values for this actor's properties
 	AACorridor();
 
-	UPROPERTY(EditDefaultsOnly)
-	UObject* SplineActor = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spline", AdvancedDisplay)
+	TSubclassOf<AActor> SplineActor;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spline", AdvancedDisplay)
+	FVector SplineOffset;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mesh", AdvancedDisplay)
+	UStaticMeshComponent* StaticMesh = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Mesh", AdvancedDisplay)
+	TArray<UMaterialInterface*> MaterialList;
+
+	UPROPERTY(Transient)
+	AActor* RuntimeSplineActor = nullptr;
+
+	int8 MaterialIndex = 0;
+
+	UWorld* World = nullptr;
 
 protected:
 
@@ -32,5 +49,9 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	void AddActorToCorridor(AActor* InActor);
+
+	UStaticMeshComponent* GetMesh() { return StaticMesh; }
+
+	void SetMaterialIndex(int8 index){MaterialIndex = index;}
 
 };

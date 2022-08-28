@@ -31,4 +31,6 @@ public:
 
 	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = "General", AdvancedDisplay)
 	FVector InitialPosition = FVector(0, 0, 100);
+	
+
 };

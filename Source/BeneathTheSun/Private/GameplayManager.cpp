@@ -26,11 +26,16 @@ void UGameplayManager::SpawnCorridor(const FVector InPosition)
 	{
 		for (int i = 0; i < GameplaySettings->CorridorAmount; i++)
 		{
-			
 			const FActorSpawnParameters SpawnParams;
 
 			FVector SpawnPosition = InPosition + GameplaySettings->InitialPosition + (GameplaySettings->CorridorOffset*i);
-			World->SpawnActor<AACorridor>(GameplaySettings->Corridor, SpawnPosition, FRotator::ZeroRotator, SpawnParams);
+			AACorridor* NewCorridor= World->SpawnActor<AACorridor>(GameplaySettings->Corridor, SpawnPosition, FRotator::ZeroRotator, SpawnParams);
+
+			if (IsValid(NewCorridor))
+			{
+				NewCorridor->GetMesh()->SetMaterial(0, NewCorridor->MaterialList[i]);
+				GameplayCorridors.Add(NewCorridor);
+			}
 		}
 	}
 }

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Subsystems/Subsystem.h"
+#include "ACorridor.h"
 #include "GameplayManager.generated.h"
 
 /**
@@ -20,4 +21,10 @@ class BENEATHTHESUN_API UGameplayManager : public UGameInstanceSubsystem
 	// End USubsystem
 	UFUNCTION(BlueprintCallable)
 	void SpawnCorridor(const FVector InPosition);
+
+	UPROPERTY(Transient)
+	TArray<AACorridor*> GameplayCorridors;
+
+	UFUNCTION(BlueprintCallable)
+	TArray<AACorridor*> GetGameplayCorridors() { return GameplayCorridors; }
 };
