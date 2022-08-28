@@ -39,3 +39,23 @@ void UGameplayManager::SpawnCorridor(const FVector InPosition)
 		}
 	}
 }
+
+
+AAProjectile* UGameplayManager::SpawnProjectileOnCorridor(int CorridorIndex, TSubclassOf<AAProjectile> ProjectileToSpawn)
+{
+	UWorld* World = GetWorld();
+
+	if (IsValid(World))
+	{
+		if (GetGameplayCorridors().IsValidIndex(CorridorIndex))
+		{
+			const FActorSpawnParameters SpawnParams;
+			AACorridor* Corridor = GameplayCorridors[CorridorIndex];
+			AAProjectile* NewProjectile = World->SpawnActor<AAProjectile>(ProjectileToSpawn,Corridor->RuntimeSplineActor->GetActorLocation() , FRotator::ZeroRotator, SpawnParams);
+
+			Corridor->AddActorToCorridor(NewProjectile);
+			NewProjectile->SetCurrentCorridorIndex(CorridorIndex);
+		}
+	}
+	return nullptr;
+}

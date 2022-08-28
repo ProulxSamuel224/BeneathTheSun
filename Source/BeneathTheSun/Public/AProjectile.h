@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Components/ShapeComponent.h"
+#include "ACorridor.h"
 #include "AProjectile.generated.h"
 
 UCLASS()
@@ -14,6 +16,22 @@ class BENEATHTHESUN_API AAProjectile : public AActor
 public:	
 	// Sets default values for this actor's properties
 	AAProjectile();
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	float speed = 0.f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	UStaticMeshComponent* Mesh = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	UShapeComponent* CollisionShape = nullptr;
+
+	UPROPERTY(Transient)
+	AACorridor* CurrentCorridor = nullptr;
+
+	void SetCurrentCorridorIndex(int8 CorridorIndex) { CurrentCorridorIndex = CorridorIndex;}
+
+	int8 CurrentCorridorIndex = 0;
 
 protected:
 	// Called when the game starts or when spawned

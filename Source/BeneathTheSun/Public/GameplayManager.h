@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Subsystems/Subsystem.h"
 #include "ACorridor.h"
+#include "AProjectile.h"
 #include "GameplayManager.generated.h"
 
 /**
@@ -25,6 +26,10 @@ class BENEATHTHESUN_API UGameplayManager : public UGameInstanceSubsystem
 	UPROPERTY(Transient)
 	TArray<AACorridor*> GameplayCorridors;
 
+public:
 	UFUNCTION(BlueprintCallable)
 	TArray<AACorridor*> GetGameplayCorridors() { return GameplayCorridors; }
+
+	UFUNCTION(BlueprintCallable)
+	AAProjectile* SpawnProjectileOnCorridor(int CorridorIndex, TSubclassOf<AAProjectile> ProjectileToSpawn);
 };
