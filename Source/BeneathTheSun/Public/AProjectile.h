@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Components/ShapeComponent.h"
+#include "Components/SplineComponent.h"
 #include "ACorridor.h"
 #include "AProjectile.generated.h"
 
@@ -29,16 +30,25 @@ public:
 	UPROPERTY(Transient)
 	AACorridor* CurrentCorridor = nullptr;
 
+	UPROPERTY(Transient)
+	USplineComponent* CurrentCorridorSpline = nullptr;
+
 	void SetCurrentCorridorIndex(int8 CorridorIndex) { CurrentCorridorIndex = CorridorIndex;}
 
 	int8 CurrentCorridorIndex = 0;
+
+	void InitProjectile();
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	float DistanceReached = 0.f;
 
 };

@@ -55,6 +55,8 @@ AAProjectile* UGameplayManager::SpawnProjectileOnCorridor(int CorridorIndex, TSu
 
 			Corridor->AddActorToCorridor(NewProjectile);
 			NewProjectile->SetCurrentCorridorIndex(CorridorIndex);
+
+			NewProjectile->InitProjectile();
 		}
 	}
 	return nullptr;

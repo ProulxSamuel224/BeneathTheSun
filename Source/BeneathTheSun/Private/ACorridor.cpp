@@ -2,6 +2,8 @@
 
 
 #include "ACorridor.h"
+#include "Components/SplineComponent.h"
+#include "GameFramework/Actor.h"
 
 // Sets default values
 AACorridor::AACorridor()
@@ -37,5 +39,19 @@ void AACorridor::Tick(float DeltaTime)
 
 void AACorridor::AddActorToCorridor(AActor* InActor)
 {
+}
+
+USplineComponent* AACorridor::GetSplineFromCorridor()
+{
+	if (IsValid(RuntimeSplineActor))
+	{
+		USplineComponent* SplineComp = RuntimeSplineActor->FindComponentByClass<USplineComponent>();
+		if (IsValid(SplineComp))
+		{
+			return SplineComp;
+		}
+
+	}
+	return nullptr;
 }
 

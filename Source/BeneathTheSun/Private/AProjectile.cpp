@@ -21,16 +21,26 @@ AAProjectile::AAProjectile()
 void AAProjectile::BeginPlay()
 {
 	Super::BeginPlay();
-	
+}
+
+void AAProjectile::InitProjectile()
+{
 	UGameplayManager* GameplayManager = GetGameInstance()->GetSubsystem<UGameplayManager>();
 	CurrentCorridor = GameplayManager->GetGameplayCorridors()[CurrentCorridorIndex];
-	GEngine->AddOnScreenDebugMessage(0, 10.f, FColor::Red, FString::FromInt(CurrentCorridorIndex),true);
+	
+	CurrentCorridorSpline = CurrentCorridor->GetSplineFromCorridor();
+
 }
 
 // Called every frame
 void AAProjectile::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	FHitResult* hit = nullptr;
+	SetActorLocation(CurrentCorridorSpline->GetLocationAtDistanceAlongSpline(DistanceReached,ESplineCoordinateSpace::World),true,hit,ETeleportType::None);
+
+	DistanceReached += speed;
 
 }
 

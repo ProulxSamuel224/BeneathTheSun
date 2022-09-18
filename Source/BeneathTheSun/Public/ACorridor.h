@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Components/SplineComponent.h"
 #include "ACorridor.generated.h"
 
 UCLASS()
@@ -53,5 +54,7 @@ public:
 	UStaticMeshComponent* GetMesh() { return StaticMesh; }
 
 	void SetMaterialIndex(int8 index){MaterialIndex = index;}
+
+	USplineComponent* GetSplineFromCorridor();
 
 };
