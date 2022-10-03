@@ -12,15 +12,21 @@ AAProjectile::AAProjectile()
 
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 
-	CollisionShape = CreateDefaultSubobject<UShapeComponent>(TEXT("CollisionShape"));
+	CollisionShape = CreateDefaultSubobject<USphereComponent>(TEXT("CollisionShape"));
 
+	RootComponent = CollisionShape;
 
+	CollisionShape->SetCollisionProfileName(TEXT("Projectile"));
+
+	Mesh->SetupAttachment(RootComponent);
 }
 
 // Called when the game starts or when spawned
 void AAProjectile::BeginPlay()
 {
 	Super::BeginPlay();
+
+	CollisionShape->OnComponentHit.AddDynamic(this, &AAProjectile::OnCollisionHit);
 }
 
 void AAProjectile::InitProjectile()
@@ -41,6 +47,11 @@ void AAProjectile::Tick(float DeltaTime)
 	SetActorLocation(CurrentCorridorSpline->GetLocationAtDistanceAlongSpline(DistanceReached,ESplineCoordinateSpace::World),true,hit,ETeleportType::None);
 
 	DistanceReached += speed;
+
+}
+
+void AAProjectile::OnCollisionHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+{
 
 }
 

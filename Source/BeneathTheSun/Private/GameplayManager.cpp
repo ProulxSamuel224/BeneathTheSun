@@ -40,6 +40,29 @@ void UGameplayManager::SpawnCorridor(const FVector InPosition)
 	}
 }
 
+void UGameplayManager::SpawnPlayer(TSubclassOf<AActor> Player)
+{
+	int8 RandomCorridorIndex = FMath::RandRange(0, GameplayCorridors.Num() - 1);
+	if (GameplayCorridors.IsValidIndex(RandomCorridorIndex))
+	{
+		const AACorridor& SpawnCorridor = *GameplayCorridors[RandomCorridorIndex];
+
+		const USplineComponent& Spline =  *SpawnCorridor.GetSplineFromCorridor();
+
+		FVector SpawnLocation = Spline.GetLocationAtSplinePoint(Spline.GetNumberOfSplinePoints(),ESplineCoordinateSpace::World);
+
+		const FActorSpawnParameters SpawnParams;
+
+		UWorld* World = GetWorld();
+
+		if (IsValid(World))
+		{
+			AActor* SpawnedPlayer = World->SpawnActor<AActor>(Player, SpawnLocation, FRotator::ZeroRotator, SpawnParams);
+		}
+
+	}
+}
+
 
 AAProjectile* UGameplayManager::SpawnProjectileOnCorridor(int CorridorIndex, TSubclassOf<AAProjectile> ProjectileToSpawn)
 {

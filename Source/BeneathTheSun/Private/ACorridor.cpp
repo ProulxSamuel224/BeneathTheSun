@@ -27,6 +27,7 @@ void AACorridor::BeginPlay()
 	{
 		const FActorSpawnParameters SpawnParams;
 		RuntimeSplineActor = World->SpawnActor<AActor>(SplineActor, GetActorLocation()+ SplineOffset, FRotator::ZeroRotator, SpawnParams);
+
 	}
 }
 
@@ -41,7 +42,7 @@ void AACorridor::AddActorToCorridor(AActor* InActor)
 {
 }
 
-USplineComponent* AACorridor::GetSplineFromCorridor()
+const USplineComponent* AACorridor::GetSplineFromCorridor() const
 {
 	if (IsValid(RuntimeSplineActor))
 	{

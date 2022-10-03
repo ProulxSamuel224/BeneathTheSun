@@ -23,6 +23,9 @@ class BENEATHTHESUN_API UGameplayManager : public UGameInstanceSubsystem
 	UFUNCTION(BlueprintCallable)
 	void SpawnCorridor(const FVector InPosition);
 
+	UFUNCTION(BlueprintCallable)
+	void SpawnPlayer(TSubclassOf<AActor> Player);
+
 	UPROPERTY(Transient)
 	TArray<AACorridor*> GameplayCorridors;
 

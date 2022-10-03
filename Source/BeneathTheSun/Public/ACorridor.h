@@ -55,6 +55,6 @@ public:
 
 	void SetMaterialIndex(int8 index){MaterialIndex = index;}
 
-	USplineComponent* GetSplineFromCorridor();
+	const USplineComponent* GetSplineFromCorridor() const;
 
 };

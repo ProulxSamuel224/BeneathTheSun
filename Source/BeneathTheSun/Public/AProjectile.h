@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Components/ShapeComponent.h"
+#include "Components/SphereComponent.h"
 #include "Components/SplineComponent.h"
 #include "ACorridor.h"
 #include "AProjectile.generated.h"
@@ -31,7 +32,7 @@ public:
 	AACorridor* CurrentCorridor = nullptr;
 
 	UPROPERTY(Transient)
-	USplineComponent* CurrentCorridorSpline = nullptr;
+	const USplineComponent* CurrentCorridorSpline = nullptr;
 
 	void SetCurrentCorridorIndex(int8 CorridorIndex) { CurrentCorridorIndex = CorridorIndex;}
 
@@ -50,5 +51,8 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	float DistanceReached = 0.f;
+
+	UFUNCTION()
+	void OnCollisionHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
 };
