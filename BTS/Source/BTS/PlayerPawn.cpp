@@ -43,6 +43,7 @@ void APlayerPawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	{
 		ResourceComponent->OnResourceChangedEvent.RemoveDynamic(this, &APlayerPawn::OnResourceChanged);
 	}
+	Super::EndPlay(EndPlayReason);
 }
 
 // Called every frame
