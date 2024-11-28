@@ -22,6 +22,13 @@ APlayerPawn::APlayerPawn()
 	PlayerPawnController = CreateDefaultSubobject<APlayerController>("PlayerController", false);
 
 	StaticMesh->SetupAttachment(RootComponent);
+
+	AbilitySystemComponent = CreateDefaultSubobject<UAbilitySystemComponent>("AbilitySystemComponent", false);
+}
+
+UAbilitySystemComponent* APlayerPawn::GetAbilitySystemComponent() const
+{
+	return AbilitySystemComponent;
 }
 
 // Called when the game starts or when spawned

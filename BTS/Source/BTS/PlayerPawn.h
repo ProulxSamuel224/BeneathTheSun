@@ -7,10 +7,12 @@
 #include "Components/ShapeComponent.h"
 #include "Components/SphereComponent.h"
 #include "PawnResourceComponent.h"
+#include "GameplayAbilities/Public/AbilitySystemComponent.h"
+#include "AbilitySystemInterface.h"
 #include "PlayerPawn.generated.h"
 
 UCLASS()
-class BTS_API APlayerPawn : public APawn
+class BTS_API APlayerPawn : public APawn, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
 
@@ -30,6 +32,9 @@ public:
 	UPROPERTY(EditAnywhere, BLueprintReadWrite, Category = "Controller", AdvancedDisplay)
 	APlayerController* PlayerPawnController = nullptr;
 
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "AbilitySystem",AdvancedDisplay)
+	UAbilitySystemComponent* AbilitySystemComponent = nullptr;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -41,6 +46,8 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent()  const override;
 
 	UFUNCTION()
 	void OnResourceChanged(UResourceObject* ResourceChanged);
