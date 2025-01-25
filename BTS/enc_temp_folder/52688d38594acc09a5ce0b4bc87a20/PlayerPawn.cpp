@@ -27,7 +27,7 @@ APlayerPawn::APlayerPawn()
 	AbilitySystemComponent = CreateDefaultSubobject<UBTSAbilitySystemComponent>("AbilitySystemComponent", false);
 }
 
-UAbilitySystemComponent* APlayerPawn::GetAbilitySystemComponent() const
+UBTSAbilitySystemComponent* APlayerPawn::GetAbilitySystemComponent() const
 {
 	return AbilitySystemComponent;
 }
@@ -39,6 +39,10 @@ void APlayerPawn::BeginPlay()
 
 	CollisionShape->OnComponentHit.AddDynamic(this, &APlayerPawn::OnCollisionHit);
 
+	//if (IsValid(ResourceComponent))
+	//{
+	//	ResourceComponent->OnResourceChangedEvent.AddDynamic(this, &APlayerPawn::OnResourceChanged);
+	//}
 
 	if (IsValid(AbilitySystemComponent))
 	{
@@ -48,7 +52,10 @@ void APlayerPawn::BeginPlay()
 
 void APlayerPawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
-
+	/*if (IsValid(ResourceComponent))
+	{
+		ResourceComponent->OnResourceChangedEvent.RemoveDynamic(this, &APlayerPawn::OnResourceChanged);
+	}*/
 	Super::EndPlay(EndPlayReason);
 }
 
@@ -64,6 +71,16 @@ void APlayerPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
 
+//void APlayerPawn::OnResourceChanged(UResourceObject* ResourceChanged)
+//{
+//	if (ResourceChanged->ResourceType == EResourceType::Health)
+//	{
+//		if (ResourceChanged->GetCurrentValue() <= 0)
+//		{
+//			OnPawnDied();
+//		}
+//	}
+//}
 
 void APlayerPawn::OnCollisionHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {

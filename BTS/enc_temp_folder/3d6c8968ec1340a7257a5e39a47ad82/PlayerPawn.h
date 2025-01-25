@@ -28,6 +28,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mesh", AdvancedDisplay)
 	UStaticMeshComponent* StaticMesh = nullptr;
 
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Resource", AdvancedDisplay)
+	//UPawnResourceComponent* ResourceComponent = nullptr;
+
 	UPROPERTY(EditAnywhere, BLueprintReadWrite, Category = "Controller", AdvancedDisplay)
 	APlayerController* PlayerPawnController = nullptr;
 
@@ -46,11 +49,10 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	//~ Begin IAbilitySystemInterface
-	/** Returns our Ability System Component. */
-	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
-	//~ End IAbilitySystemInterface
+	virtual UBTSAbilitySystemComponent* GetAbilitySystemComponent()  const override;
 
+	//UFUNCTION()
+	//void OnResourceChanged(UResourceObject* ResourceChanged);
 
 	UFUNCTION()
 	void OnCollisionHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);

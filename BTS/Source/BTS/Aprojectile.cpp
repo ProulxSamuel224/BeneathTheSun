@@ -65,11 +65,11 @@ void AAProjectile::OnCollisionHit(UPrimitiveComponent* HitComp, AActor* OtherAct
 		{
 			UUGameManager* GameManager = GetGameInstance()->GetSubsystem<UUGameManager>();
 
-			UResourceObject* Health = PlayerPawn->ResourceComponent->GetResourceByType(EResourceType::Health);
-			GEngine->AddOnScreenDebugMessage(1, 10, FColor::Blue, FString::SanitizeFloat(Health->GetCurrentValue()),false);
+			//UResourceObject* Health = PlayerPawn->ResourceComponent->GetResourceByType(EResourceType::Health);
+			////GEngine->AddOnScreenDebugMessage(1, 10, FColor::Blue, FString::SanitizeFloat(Health->GetCurrentValue()),false);
 
-			GameManager->DealDamageBetweenActors(PlayerPawn->ResourceComponent, ResourceComponent);
-			GEngine->AddOnScreenDebugMessage(2, 10, FColor::Red, FString::SanitizeFloat(Health->GetCurrentValue()),false);
+			//GameManager->DealDamageBetweenActors(PlayerPawn->ResourceComponent, ResourceComponent);
+		//	GEngine->AddOnScreenDebugMessage(2, 10, FColor::Red, FString::SanitizeFloat(Health->GetCurrentValue()),false);
 			GEngine->AddOnScreenDebugMessage(3, 10, FColor::Red, "Projectile Hit",false);
 
 			Destroy();
