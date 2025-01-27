@@ -6,6 +6,8 @@
 #include "PawnResourceComponent.h"
 #include "PlayerPawn.h"
 
+#include "BTSBaseEnemyPawn.h"
+
 // Sets default values
 AAProjectile::AAProjectile()
 {
@@ -15,8 +17,6 @@ AAProjectile::AAProjectile()
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 
 	CollisionShape = CreateDefaultSubobject<USphereComponent>(TEXT("CollisionShape"));
-
-	ResourceComponent = CreateDefaultSubobject<UPawnResourceComponent>("ResourceComponent", false);
 
 	RootComponent = CollisionShape;
 
@@ -59,20 +59,21 @@ void AAProjectile::Tick(float DeltaTime)
 
 void AAProjectile::OnCollisionHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	if (IsValid(OtherActor))
+	if (IsValid(OtherActor)&& IsValid(HitDamageEffect))
 	{
 		if (APlayerPawn* PlayerPawn = Cast<APlayerPawn>(OtherActor))
 		{
-			UUGameManager* GameManager = GetGameInstance()->GetSubsystem<UUGameManager>();
-
-			//UResourceObject* Health = PlayerPawn->ResourceComponent->GetResourceByType(EResourceType::Health);
-			////GEngine->AddOnScreenDebugMessage(1, 10, FColor::Blue, FString::SanitizeFloat(Health->GetCurrentValue()),false);
-
-			//GameManager->DealDamageBetweenActors(PlayerPawn->ResourceComponent, ResourceComponent);
-		//	GEngine->AddOnScreenDebugMessage(2, 10, FColor::Red, FString::SanitizeFloat(Health->GetCurrentValue()),false);
-			GEngine->AddOnScreenDebugMessage(3, 10, FColor::Red, "Projectile Hit",false);
+			const UGameplayEffect* GameplayEffect = HitDamageEffect->GetDefaultObject<UGameplayEffect>();
+			const FGameplayEffectContextHandle EffectContext = PlayerPawn->GetAbilitySystemComponent()->MakeEffectContext();
+			PlayerPawn->GetAbilitySystemComponent()->ApplyGameplayEffectToSelf(GameplayEffect, 1.f, EffectContext);
 
 			Destroy();
+		}
+		if (ABTSBaseEnemyPawn* Enemy = Cast<ABTSBaseEnemyPawn>(OtherActor))
+		{
+			const UGameplayEffect* GameplayEffect = HitDamageEffect->GetDefaultObject<UGameplayEffect>();
+			const FGameplayEffectContextHandle EffectContext = Enemy->GetAbilitySystemComponent()->MakeEffectContext();
+			Enemy->GetAbilitySystemComponent()->ApplyGameplayEffectToSelf(GameplayEffect, 1.f, EffectContext);
 		}
 	}
 }

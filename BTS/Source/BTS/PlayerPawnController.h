@@ -27,7 +27,9 @@ protected:
 
 	virtual void BeginPlay() override;
 
-
+public:
+	UFUNCTION()
 	void MoveUp();
+	UFUNCTION()
 	void MoveDown();
 };

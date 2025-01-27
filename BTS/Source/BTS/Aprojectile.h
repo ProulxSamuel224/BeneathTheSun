@@ -6,6 +6,7 @@
 #include "Components/SphereComponent.h"
 #include "Components/SplineComponent.h"
 #include "PawnResourceComponent.h"
+#include "GameplayEffect.h"
 #include "ACorridor.h"
 #include "AProjectile.generated.h"
 
@@ -27,8 +28,8 @@
 		UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 		UShapeComponent* CollisionShape = nullptr;
 
-		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Resource", AdvancedDisplay)
-		UPawnResourceComponent* ResourceComponent = nullptr;
+		UPROPERTY(EditDefaultsOnly)
+		TSubclassOf<UGameplayEffect> HitDamageEffect;
 
 		UPROPERTY(Transient)
 		AACorridor* CurrentCorridor = nullptr;

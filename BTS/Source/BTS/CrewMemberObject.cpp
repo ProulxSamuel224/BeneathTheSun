@@ -3,3 +3,7 @@
 
 #include "CrewMemberObject.h"
 
+UCrewMemberObject::UCrewMemberObject()
+{
+	SpriteComponent = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("Sprite"));
+}
