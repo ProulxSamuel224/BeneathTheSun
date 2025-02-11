@@ -11,6 +11,7 @@
 #include "PlayerAttributeSet.h"
 #include "ShipAttributeSet.h"
 #include "PlayerPawnController.h"
+#include "GAS/BTSGameplayAbility.h"
 
 #include "PlayerPawn.generated.h"
 
@@ -54,6 +55,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AbilitySystem", AdvancedDisplay)
 	UShipAttributeSet* ShipAttributeSet = nullptr;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AbilitySystem", AdvancedDisplay)
+	TMap<TSubclassOf<UBTSGameplayAbility>, UInputAction*> ActivableAbilities;
+
+	FDelegateHandle HealthChangedDelegateHandle;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -83,11 +89,22 @@ public:
 	virtual bool HasAnyMatchingGameplayTags(const FGameplayTagContainer& TagContainer) const override;
 
 
+	UFUNCTION(BlueprintCallable)
+	const float GetHullAttributeValue();
 
 
 	UFUNCTION()
 	void OnCollisionHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
 	void OnPawnDied();
+
+	UFUNCTION()
+	void OnHullChanged();
+
+
+private:
+	void SetAttributeSetChangeDelegates();
+
+
 
 };

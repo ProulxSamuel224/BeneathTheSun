@@ -100,6 +100,8 @@ void APlayerPawn::BeginPlay()
 		AbilitySystemComponent->InitAbilityActorInfo(this, this);
 		AbilitySystemComponent->AddAttributeSetSubobject(PlayerAttributeSet);
 		AbilitySystemComponent->AddAttributeSetSubobject(ShipAttributeSet);
+
+		AbilitySystemComponent->InitializeComponent();
 	}
 }
 
@@ -168,4 +170,23 @@ void APlayerPawn::OnPawnDied()
 {
 	GEngine->AddOnScreenDebugMessage(3, 10, FColor::Blue, "PlayerPawn Dead");
 }
+
+void APlayerPawn::SetAttributeSetChangeDelegates()
+{
+
+}
+
+void APlayerPawn::OnHullChanged()
+{
+
+}
+
+const float APlayerPawn::GetHullAttributeValue()
+{
+	if (IsValid(ShipAttributeSet))
+	{
+		return ShipAttributeSet->GetHullAttribute().GetNumericValue(ShipAttributeSet);
+	}
+	return 0.f;
+}	
 

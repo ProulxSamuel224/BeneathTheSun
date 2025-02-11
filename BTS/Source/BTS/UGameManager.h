@@ -38,6 +38,9 @@ public:
 	TArray<AACorridor*> GetGameplayCorridors() { return GameplayCorridors; }
 
 	UFUNCTION(BlueprintCallable)
+	int GetCurrentPlayerCorridorIndex() { return CurrentPlayerCorridorIndex; }
+
+	UFUNCTION(BlueprintCallable)
 	AAProjectile* SpawnProjectileOnCorridor(int CorridorIndex, TSubclassOf<AAProjectile> ProjectileToSpawn);
 
 	UFUNCTION(BlueprintCallable)
