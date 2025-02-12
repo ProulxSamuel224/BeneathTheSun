@@ -21,6 +21,7 @@ class BTS_API UPlayerAttributeSet : public UAttributeSet
 {
 	GENERATED_BODY()
 
+public:
     /*Piloting*/
     UPROPERTY()
     FGameplayAttributeData Piloting;
@@ -31,8 +32,7 @@ class BTS_API UPlayerAttributeSet : public UAttributeSet
     FGameplayAttributeData Weapons;
     ATTRIBUTE_ACCESSORS(UPlayerAttributeSet, Weapons)
 
-        /*Mechanic*/
-    UPROPERTY()
+        /*Mechanic*/UPROPERTY()
     FGameplayAttributeData Mechanic;
     ATTRIBUTE_ACCESSORS(UPlayerAttributeSet, Mechanic)
         /*Scouting*/

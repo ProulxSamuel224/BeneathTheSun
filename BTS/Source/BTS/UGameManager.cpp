@@ -109,7 +109,7 @@ void UUGameManager::MovePlayerPawnOnCorridor(EMovementType MovementType)
 
 			FVector SpawnLocation = Spline.GetLocationAtSplinePoint(Spline.GetNumberOfSplinePoints(), ESplineCoordinateSpace::World);
 
-			SpawnedPlayer->SetActorLocation(SpawnLocation);
+			SpawnedPlayer->MoveToLocation(SpawnLocation);
 			CurrentPlayerCorridorIndex++;
 		}
 	}
@@ -123,7 +123,7 @@ void UUGameManager::MovePlayerPawnOnCorridor(EMovementType MovementType)
 
 			FVector SpawnLocation = Spline.GetLocationAtSplinePoint(Spline.GetNumberOfSplinePoints(), ESplineCoordinateSpace::World);
 
-			SpawnedPlayer->SetActorLocation(SpawnLocation);
+			SpawnedPlayer->MoveToLocation(SpawnLocation);
 			CurrentPlayerCorridorIndex--;
 		}
 	}

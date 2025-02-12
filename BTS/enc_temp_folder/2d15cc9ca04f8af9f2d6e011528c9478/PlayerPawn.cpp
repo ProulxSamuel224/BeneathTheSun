@@ -133,10 +133,6 @@ void APlayerPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 void APlayerPawn::MoveUp(const FInputActionValue& Value)
 {
-	if (bIsMoving)
-	{
-		return;
-	}
 	UUGameManager* GameManager = GetGameInstance()->GetSubsystem<UUGameManager>();
 
 	EMovementType MovementType = EMovementType::MoveUp;
@@ -150,11 +146,6 @@ void APlayerPawn::MoveUp(const FInputActionValue& Value)
 
 void APlayerPawn::MoveDown(const FInputActionValue& Value)
 {
-
-	if (bIsMoving)
-	{
-		return;
-	}
 	UUGameManager* GameManager = GetGameInstance()->GetSubsystem<UUGameManager>();
 
 	EMovementType MovementType = EMovementType::MoveDown;

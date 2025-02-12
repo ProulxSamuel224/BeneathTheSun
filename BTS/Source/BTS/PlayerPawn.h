@@ -58,7 +58,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AbilitySystem", AdvancedDisplay)
 	TMap<TSubclassOf<UBTSGameplayAbility>, UInputAction*> ActivableAbilities;
 
-	FDelegateHandle HealthChangedDelegateHandle;
+	UPROPERTY(EditDefaultsOnly)
+	float MoveToSpeed = 0.1f;
 
 protected:
 	// Called when the game starts or when spawned
@@ -98,13 +99,23 @@ public:
 
 	void OnPawnDied();
 
-	UFUNCTION()
-	void OnHullChanged();
-
+	void MoveToLocation(FVector NewLocation);
 
 private:
 	void SetAttributeSetChangeDelegates();
 
+	void OnHullChanged(const FOnAttributeChangeData& Data);
 
+
+private:
+
+	FVector MoveToTargetLocation = FVector::ZeroVector;
+	FVector MoveToInitiallocation = FVector::ZeroVector;
+
+	
+	
+	bool bIsMoving = false;
+
+	float MovementAlpha = 0.f;
 
 };
