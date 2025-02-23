@@ -30,6 +30,9 @@ public :
 	UFUNCTION(BlueprintCallable, Category = "Abilities")
 	bool HasAbility(TSubclassOf<UBTSGameplayAbility> AbilityClass);
 
+	UFUNCTION(BlueprintCallable, Category = "Abilities")
+	FGameplayAbilitySpecHandle GetGrantedAbilitySpecHandle(TSubclassOf<UBTSGameplayAbility> AbilityClass);
+
 
 private:
 	void GrantInitialAbilities();

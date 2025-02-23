@@ -62,6 +62,11 @@ bool UBTSAbilitySystemComponent::HasAbility(TSubclassOf<UBTSGameplayAbility> Abi
 	return GrantedAbilities.Find(AbilityClass) != nullptr;
 }
 
+FGameplayAbilitySpecHandle UBTSAbilitySystemComponent::GetGrantedAbilitySpecHandle(TSubclassOf<UBTSGameplayAbility> AbilityClass)
+{
+	return *GrantedAbilities.Find(AbilityClass);
+}
+
 
 void UBTSAbilitySystemComponent::GrantInitialAbilities()
 {

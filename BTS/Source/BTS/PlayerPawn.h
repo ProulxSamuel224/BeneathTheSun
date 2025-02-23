@@ -56,7 +56,7 @@ public:
 	UShipAttributeSet* ShipAttributeSet = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AbilitySystem", AdvancedDisplay)
-	TMap<TSubclassOf<UBTSGameplayAbility>, UInputAction*> ActivableAbilities;
+	TMap<UInputAction*, TSubclassOf<UBTSGameplayAbility>> ActivableAbilities;
 
 	UPROPERTY(EditDefaultsOnly)
 	float MoveToSpeed = 0.1f;
@@ -92,6 +92,8 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	const float GetHullAttributeValue();
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnPawnMoved(bool bMoveUp);
 
 
 	UFUNCTION()
@@ -105,6 +107,8 @@ private:
 	void SetAttributeSetChangeDelegates();
 
 	void OnHullChanged(const FOnAttributeChangeData& Data);
+
+	void ActivateAbilityFromInput(const FInputActionValue& Value, UInputAction* InputAction);
 
 
 private:

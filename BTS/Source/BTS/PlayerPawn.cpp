@@ -128,6 +128,18 @@ void APlayerPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 		Input->BindAction(MoveUpAction, ETriggerEvent::Completed, this, &APlayerPawn::MoveUp);
 		Input->BindAction(MoveDownAction, ETriggerEvent::Completed, this, &APlayerPawn::MoveDown);
+
+
+		for (const auto& ActivableAbility : ActivableAbilities)
+		{
+			AbilitySystemComponent->GiveAbility(ActivableAbility.Value);
+			UInputAction* InputAction = ActivableAbility.Key;
+			if (InputAction)
+			{
+				Input->BindAction(InputAction, ETriggerEvent::Triggered, this, &APlayerPawn::ActivateAbilityFromInput, InputAction);
+			}
+		}
+
 	}
 }
 
@@ -145,6 +157,7 @@ void APlayerPawn::MoveUp(const FInputActionValue& Value)
 		GameManager->MovePlayerPawnOnCorridor(MovementType);
 	}
 
+	OnPawnMoved(true);
 	GEngine->AddOnScreenDebugMessage(3, 10, FColor::Red, "MoveUp", false);
 }
 
@@ -163,7 +176,7 @@ void APlayerPawn::MoveDown(const FInputActionValue& Value)
 	{
 		GameManager->MovePlayerPawnOnCorridor(MovementType);
 	}
-
+	OnPawnMoved(false);
 	GEngine->AddOnScreenDebugMessage(3, 10, FColor::Red, "MoveDown", false);
 }
 
@@ -235,6 +248,21 @@ void APlayerPawn::MoveToLocation(FVector NewLocation)
 		MoveToTargetLocation = NewLocation;
 		MoveToInitiallocation = GetActorLocation();
 		bIsMoving = true;
+	}
+}
+
+void APlayerPawn::ActivateAbilityFromInput(const FInputActionValue& Value, UInputAction* InputAction)
+{
+	if (AbilitySystemComponent && InputAction && ActivableAbilities.Contains(InputAction))
+	{
+		TSubclassOf<UBTSGameplayAbility> AbilityClass = ActivableAbilities[InputAction];
+		if (AbilityClass)
+		{
+			if (AbilitySystemComponent->HasAbility(AbilityClass))
+			{
+				AbilitySystemComponent->TryActivateAbility(AbilitySystemComponent->GetGrantedAbilitySpecHandle(AbilityClass));
+			}
+		}
 	}
 }
 
