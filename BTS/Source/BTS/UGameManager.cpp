@@ -65,7 +65,7 @@ void UUGameManager::SpawnPlayer(APlayerPawn* Player)
 	}
 }
 
-AAProjectile* UUGameManager::SpawnProjectileOnCorridor(int CorridorIndex, TSubclassOf<AAProjectile> ProjectileToSpawn)
+AAProjectile* UUGameManager::SpawnProjectileOnCorridor(int CorridorIndex, TSubclassOf<AAProjectile> ProjectileToSpawn,bool bPlayerProjectile)
 {
 	UWorld* World = GetWorld();
 
@@ -75,13 +75,36 @@ AAProjectile* UUGameManager::SpawnProjectileOnCorridor(int CorridorIndex, TSubcl
 		{
 			const FActorSpawnParameters SpawnParams;
 			AACorridor* Corridor = GameplayCorridors[CorridorIndex];
-			AAProjectile* NewProjectile = World->SpawnActor<AAProjectile>(ProjectileToSpawn, Corridor->RuntimeSplineActor->GetActorLocation(), FRotator::ZeroRotator, SpawnParams);
+
+			FVector SpawnLocation = Corridor->GetCorridorStartLocation();
+			if (bPlayerProjectile)
+			{
+				SpawnLocation = Corridor->GetCorridorEndLocation();
+			}
+
+			AAProjectile* NewProjectile = World->SpawnActor<AAProjectile>(ProjectileToSpawn, SpawnLocation, FRotator::ZeroRotator, SpawnParams);
 
 			Corridor->AddActorToCorridor(NewProjectile);
 			NewProjectile->SetCurrentCorridorIndex(CorridorIndex);
 
 			NewProjectile->InitProjectile();
 		}
+	}
+	return nullptr;
+}
+
+AAProjectile* UUGameManager::ShootProjectile(TSubclassOf<AAProjectile> ProjectileToSpawn, const FVector& SpawnLocation, const FVector& Direction)
+{
+	UWorld* World = GetWorld();
+	const FActorSpawnParameters SpawnParams;
+
+	if (IsValid(World))
+	{
+		AAProjectile* NewProjectile = World->SpawnActor<AAProjectile>(ProjectileToSpawn, SpawnLocation, FRotator::ZeroRotator, SpawnParams);
+
+		NewProjectile->SetProjectileDirection(Direction);
+
+		return NewProjectile;
 	}
 	return nullptr;
 }

@@ -5,6 +5,8 @@
 #include "Components/ShapeComponent.h"
 #include "Components/SphereComponent.h"
 #include "Components/SplineComponent.h"
+
+#include "GameFramework/ProjectileMovementComponent.h"
 #include "PawnResourceComponent.h"
 #include "GameplayEffect.h"
 #include "ACorridor.h"
@@ -34,6 +36,9 @@
 		UPROPERTY(Transient)
 		AACorridor* CurrentCorridor = nullptr;
 
+		UPROPERTY(EditDefaultsOnly,BlueprintReadWrite)
+		UProjectileMovementComponent* ProjectileMovementComponent = nullptr;
+
 		UPROPERTY(Transient)
 		const USplineComponent* CurrentCorridorSpline = nullptr;
 
@@ -57,4 +62,6 @@
 		UFUNCTION()
 		void OnCollisionHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
+
+		void SetProjectileDirection(const FVector& ShootDirection);
 	};

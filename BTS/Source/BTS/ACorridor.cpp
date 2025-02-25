@@ -25,7 +25,8 @@ void AACorridor::BeginPlay()
 	{
 		const FActorSpawnParameters SpawnParams;
 		RuntimeSplineActor = World->SpawnActor<AActor>(SplineActor, GetActorLocation() + SplineOffset, FRotator::ZeroRotator, SpawnParams);
-
+		CorridorStartLocation = RuntimeSplineActor->GetActorLocation();
+		CorridorEndLocation = GetSplineFromCorridor()->GetLocationAtSplinePoint(GetSplineFromCorridor()->GetNumberOfSplinePoints() - 2, ESplineCoordinateSpace::World);
 	}
 }
 

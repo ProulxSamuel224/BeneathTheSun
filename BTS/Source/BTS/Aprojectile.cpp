@@ -3,7 +3,6 @@
 
 #include "AProjectile.h"
 #include "UGameManager.h"
-#include "PawnResourceComponent.h"
 #include "PlayerPawn.h"
 
 #include "BTSBaseEnemyPawn.h"
@@ -17,6 +16,16 @@ AAProjectile::AAProjectile()
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 
 	CollisionShape = CreateDefaultSubobject<USphereComponent>(TEXT("CollisionShape"));
+
+	ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovement"));
+
+	ProjectileMovementComponent->SetUpdatedComponent(CollisionShape);
+	ProjectileMovementComponent->InitialSpeed = 3000.0f;
+	ProjectileMovementComponent->MaxSpeed = 3000.0f;
+	ProjectileMovementComponent->bRotationFollowsVelocity = true;
+	ProjectileMovementComponent->bShouldBounce = true;
+	ProjectileMovementComponent->Bounciness = 0.3f;
+	ProjectileMovementComponent->ProjectileGravityScale = 0.0f;
 
 	RootComponent = CollisionShape;
 
@@ -47,14 +56,26 @@ void AAProjectile::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	FVector Location = GetActorLocation();
-	if(Location.PointsAreNear(Location,CurrentCorridorSpline->GetLocationAtSplinePoint(CurrentCorridorSpline->GetNumberOfSplinePoints() - 1,ESplineCoordinateSpace::World),5))
-	{
-		Destroy();
-	}
-	FHitResult* hit = nullptr;
-	SetActorLocation(CurrentCorridorSpline->GetLocationAtDistanceAlongSpline(DistanceReached, ESplineCoordinateSpace::World), true, hit, ETeleportType::None);
+	
+	//if (speed < 0.f)
+	//{
+	//	if(Location.PointsAreNear(Location,CurrentCorridor->GetCorridorStartLocation(),5))
+	//	{
+	//		Destroy();
+	//	}
+	//}
+	//else
+	//{
+	//	if (Location.PointsAreNear(Location, CurrentCorridor->GetCorridorEndLocation(), 5))
+	//	{
+	//		Destroy();
+	//	}
+	//}
+	
+	//FHitResult* hit = nullptr;
+	//SetActorLocation(CurrentCorridorSpline->GetLocationAtDistanceAlongSpline(DistanceReached, ESplineCoordinateSpace::World), true, hit, ETeleportType::None);
 
-	DistanceReached += speed;
+	//DistanceReached += speed;
 }
 
 void AAProjectile::OnCollisionHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
@@ -76,5 +97,11 @@ void AAProjectile::OnCollisionHit(UPrimitiveComponent* HitComp, AActor* OtherAct
 			Enemy->GetAbilitySystemComponent()->ApplyGameplayEffectToSelf(GameplayEffect, 1.f, EffectContext);
 		}
 	}
+}
+
+
+void AAProjectile::SetProjectileDirection(const FVector& ShootDirection)
+{
+	ProjectileMovementComponent->Velocity = ShootDirection * speed;
 }
 

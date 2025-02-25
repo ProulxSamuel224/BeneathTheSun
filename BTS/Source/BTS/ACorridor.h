@@ -50,4 +50,14 @@ public:
 
 	const USplineComponent* GetSplineFromCorridor() const;
 
+	UFUNCTION(BlueprintCallable)
+	const FVector GetCorridorEndLocation() { return CorridorEndLocation; }
+	UFUNCTION(BlueprintCallable)
+	const FVector GetCorridorStartLocation() { return CorridorStartLocation; }
+
+private:
+
+	 FVector CorridorStartLocation;
+
+	 FVector CorridorEndLocation;
 };

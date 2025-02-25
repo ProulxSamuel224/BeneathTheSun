@@ -41,8 +41,11 @@ public:
 	int GetCurrentPlayerCorridorIndex() { return CurrentPlayerCorridorIndex; }
 
 	UFUNCTION(BlueprintCallable)
-	AAProjectile* SpawnProjectileOnCorridor(int CorridorIndex, TSubclassOf<AAProjectile> ProjectileToSpawn);
+	AAProjectile* SpawnProjectileOnCorridor(int CorridorIndex, TSubclassOf<AAProjectile> ProjectileToSpawn, bool bPlayerProjectile);
 
+	UFUNCTION(BlueprintCallable)
+
+	AAProjectile* ShootProjectile(TSubclassOf<AAProjectile> ProjectileToSpawn, const FVector& SpawnLocation, const FVector& Direction);
 	UFUNCTION(BlueprintCallable)
 	bool DealDamageBetweenActors(UPawnResourceComponent* DamagedTargetComp, UPawnResourceComponent* HitSourceComp);
 

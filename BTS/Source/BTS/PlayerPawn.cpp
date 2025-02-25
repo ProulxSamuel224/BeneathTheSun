@@ -136,7 +136,7 @@ void APlayerPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 			UInputAction* InputAction = ActivableAbility.Key;
 			if (InputAction)
 			{
-				Input->BindAction(InputAction, ETriggerEvent::Triggered, this, &APlayerPawn::ActivateAbilityFromInput, InputAction);
+				Input->BindAction(InputAction, ETriggerEvent::Completed, this, &APlayerPawn::ActivateAbilityFromInput, InputAction);
 			}
 		}
 
