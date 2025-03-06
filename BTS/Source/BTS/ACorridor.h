@@ -48,13 +48,18 @@ public:
 
 	void SetMaterialIndex(int8 index) { MaterialIndex = index; }
 
-	const USplineComponent* GetSplineFromCorridor() const;
+	USplineComponent* GetSplineFromCorridor();
 
 	UFUNCTION(BlueprintCallable)
 	const FVector GetCorridorEndLocation() { return CorridorEndLocation; }
 	UFUNCTION(BlueprintCallable)
 	const FVector GetCorridorStartLocation() { return CorridorStartLocation; }
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnCorridorTargetted();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnCorridorUnTargetted();
 private:
 
 	 FVector CorridorStartLocation;

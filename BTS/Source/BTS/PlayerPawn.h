@@ -50,6 +50,12 @@ public:
 	UPROPERTY(EditAnywhere)
 	UInputAction* MoveDownAction = nullptr;
 
+	UPROPERTY(EditAnywhere)
+	UInputAction* TargetUpAction = nullptr;
+
+	UPROPERTY(EditAnywhere)
+	UInputAction* TargetDownAction = nullptr;
+
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "AbilitySystem", AdvancedDisplay)
 	UPlayerAttributeSet* PlayerAttributeSet = nullptr;
 
@@ -72,6 +78,11 @@ protected:
 	void MoveUp(const FInputActionValue& Value);
 	UFUNCTION()
 	void MoveDown(const FInputActionValue& Value);
+
+	UFUNCTION()
+	void TargetUp(const FInputActionValue& Value);
+	UFUNCTION()
+	void TargetDown(const FInputActionValue& Value);
 
 
 
@@ -103,8 +114,7 @@ public:
 	void OnPawnDied();
 
 	void MoveToLocation(FVector NewLocation);
-	
-	void SetTargettedCorridor(const AACorridor& Corridor);
+
 
 private:
 	void SetAttributeSetChangeDelegates();
@@ -125,6 +135,5 @@ private:
 
 	float MovementAlpha = 0.f;
 
-	AACorridor* TargettedCorrido = nullptr;
 
 };

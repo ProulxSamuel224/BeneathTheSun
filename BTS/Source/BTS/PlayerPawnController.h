@@ -29,15 +29,15 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
-	UFUNCTION()
-	void MoveUp();
-	UFUNCTION()
-	void MoveDown();
+	//UFUNCTION()
+	//void MoveUp();
+	//UFUNCTION()
+	//void MoveDown();
 
-	UFUNCTION()
-	void TargetUp();
-	UFUNCTION()
-	void TargetDown();
+	//UFUNCTION()
+	//void TargetUp();
+	//UFUNCTION()
+	//void TargetDown();
 
 private:
 

@@ -128,6 +128,8 @@ void APlayerPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 		Input->BindAction(MoveUpAction, ETriggerEvent::Completed, this, &APlayerPawn::MoveUp);
 		Input->BindAction(MoveDownAction, ETriggerEvent::Completed, this, &APlayerPawn::MoveDown);
+		Input->BindAction(TargetUpAction, ETriggerEvent::Completed, this, &APlayerPawn::TargetUp);
+		Input->BindAction(TargetDownAction, ETriggerEvent::Completed, this, &APlayerPawn::TargetDown);
 
 
 		for (const auto& ActivableAbility : ActivableAbilities)
@@ -180,6 +182,21 @@ void APlayerPawn::MoveDown(const FInputActionValue& Value)
 	GEngine->AddOnScreenDebugMessage(3, 10, FColor::Red, "MoveDown", false);
 }
 
+void APlayerPawn::TargetUp(const FInputActionValue& Value)
+{
+	UUGameManager* GameManager = GetGameInstance()->GetSubsystem<UUGameManager>();
+
+	GameManager->UpdateTargettedCorridor(true);
+	GEngine->AddOnScreenDebugMessage(3, 10, FColor::Red, "SelectTargetUp", false);
+}
+void APlayerPawn::TargetDown(const FInputActionValue& Value)
+{
+	UUGameManager* GameManager = GetGameInstance()->GetSubsystem<UUGameManager>();
+
+	GameManager->UpdateTargettedCorridor(false);
+	GEngine->AddOnScreenDebugMessage(3, 10, FColor::Red, "SelectTargetDown", false);
+}
+
 // Called every frame
 void APlayerPawn::Tick(float DeltaTime)
 {
@@ -211,6 +228,8 @@ void APlayerPawn::OnPawnDied()
 {
 	GEngine->AddOnScreenDebugMessage(3, 10, FColor::Blue, "PlayerPawn Dead");
 }
+
+
 
 void APlayerPawn::SetAttributeSetChangeDelegates()
 {

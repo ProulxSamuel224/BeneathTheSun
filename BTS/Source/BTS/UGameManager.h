@@ -38,8 +38,14 @@ public:
 	TArray<AACorridor*> GetGameplayCorridors() { return GameplayCorridors; }
 
 	UFUNCTION(BlueprintCallable)
-	int GetCurrentPlayerCorridorIndex() { return CurrentPlayerCorridorIndex; }
+	uint8 GetCurrentPlayerCorridorIndex() { return CurrentPlayerCorridorIndex; }
+	UFUNCTION(BlueprintCallable)
+	uint8 GetCurrentTargettedCorridorIndex() { return CurrentTargettedCorridorIndex; }
 
+	UFUNCTION(BlueprintCallable)
+	void SetCurrentTargettedCorridorIndex(uint8 NewCorridorIndex) { CurrentTargettedCorridorIndex = NewCorridorIndex; }
+
+	
 	UFUNCTION(BlueprintCallable)
 	AAProjectile* SpawnProjectileOnCorridor(int CorridorIndex, TSubclassOf<AAProjectile> ProjectileToSpawn, bool bPlayerProjectile);
 
@@ -51,9 +57,12 @@ public:
 
 	void MovePlayerPawnOnCorridor(EMovementType MovementType);
 
+	void UpdateTargettedCorridor(bool bIsUp);
+
 private:
 
 	APlayerPawn* SpawnedPlayer = nullptr;
 
 	uint8 CurrentPlayerCorridorIndex = 0;
+	uint8 CurrentTargettedCorridorIndex = 0;
 };

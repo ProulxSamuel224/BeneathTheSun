@@ -44,11 +44,13 @@ void UUGameManager::SpawnPlayer(APlayerPawn* Player)
 	int8 RandomCorridorIndex = FMath::RandRange(0, GameplayCorridors.Num() - 1);
 	if (GameplayCorridors.IsValidIndex(RandomCorridorIndex))
 	{
-		const AACorridor& SpawnCorridor = *GameplayCorridors[RandomCorridorIndex];
+		 AACorridor* SpawnCorridor = GameplayCorridors[RandomCorridorIndex];
 
-		const USplineComponent& Spline = *SpawnCorridor.GetSplineFromCorridor();
+		
 
-		FVector SpawnLocation = Spline.GetLocationAtSplinePoint(Spline.GetNumberOfSplinePoints(), ESplineCoordinateSpace::World);
+		USplineComponent* Spline = SpawnCorridor->GetSplineFromCorridor();
+
+		FVector SpawnLocation = Spline->GetLocationAtSplinePoint(Spline->GetNumberOfSplinePoints(), ESplineCoordinateSpace::World);
 
 		const FActorSpawnParameters SpawnParams;
 
@@ -59,6 +61,9 @@ void UUGameManager::SpawnPlayer(APlayerPawn* Player)
 		SpawnedPlayer = Player;
 
 		CurrentPlayerCorridorIndex = RandomCorridorIndex;
+
+		CurrentTargettedCorridorIndex = CurrentPlayerCorridorIndex;
+		SpawnCorridor->OnCorridorTargetted();
 
 		GEngine->AddOnScreenDebugMessage(1, 10, FColor::Red, "PlayerSpawned");
 			
@@ -127,10 +132,10 @@ void UUGameManager::MovePlayerPawnOnCorridor(EMovementType MovementType)
 	{
 		if (CurrentPlayerCorridorIndex < (GameplayCorridors.Num() - 1))
 		{
-			const AACorridor& SpawnCorridor = *GameplayCorridors[CurrentPlayerCorridorIndex + 1];
-			const USplineComponent& Spline = *SpawnCorridor.GetSplineFromCorridor();
+			AACorridor* SpawnCorridor = GameplayCorridors[CurrentPlayerCorridorIndex + 1];
+			USplineComponent* Spline = SpawnCorridor->GetSplineFromCorridor();
 
-			FVector SpawnLocation = Spline.GetLocationAtSplinePoint(Spline.GetNumberOfSplinePoints(), ESplineCoordinateSpace::World);
+			FVector SpawnLocation = Spline->GetLocationAtSplinePoint(Spline->GetNumberOfSplinePoints(), ESplineCoordinateSpace::World);
 
 			SpawnedPlayer->MoveToLocation(SpawnLocation);
 			CurrentPlayerCorridorIndex++;
@@ -141,13 +146,39 @@ void UUGameManager::MovePlayerPawnOnCorridor(EMovementType MovementType)
 	{
 		if (CurrentPlayerCorridorIndex > 0)
 		{
-			const AACorridor& SpawnCorridor = *GameplayCorridors[CurrentPlayerCorridorIndex -1];
-			const USplineComponent& Spline = *SpawnCorridor.GetSplineFromCorridor();
+			AACorridor* SpawnCorridor = GameplayCorridors[CurrentPlayerCorridorIndex -1];
+			USplineComponent* Spline = SpawnCorridor->GetSplineFromCorridor();
 
-			FVector SpawnLocation = Spline.GetLocationAtSplinePoint(Spline.GetNumberOfSplinePoints(), ESplineCoordinateSpace::World);
+			FVector SpawnLocation = Spline->GetLocationAtSplinePoint(Spline->GetNumberOfSplinePoints(), ESplineCoordinateSpace::World);
 
 			SpawnedPlayer->MoveToLocation(SpawnLocation);
 			CurrentPlayerCorridorIndex--;
+		}
+	}
+}
+
+void UUGameManager::UpdateTargettedCorridor(bool bIsUp)
+{
+	if (bIsUp)
+	{
+		if (CurrentTargettedCorridorIndex < (GameplayCorridors.Num() - 1))
+		{
+			AACorridor* CurrentTargettedCorridor = GameplayCorridors[CurrentTargettedCorridorIndex];
+			CurrentTargettedCorridor->OnCorridorUnTargetted();
+			CurrentTargettedCorridorIndex++;
+			CurrentTargettedCorridor = GameplayCorridors[CurrentTargettedCorridorIndex];
+			CurrentTargettedCorridor->OnCorridorTargetted();
+		}
+	}
+	else
+	{
+		if (CurrentTargettedCorridorIndex > 0)
+		{
+			AACorridor* CurrentTargettedCorridor = GameplayCorridors[CurrentTargettedCorridorIndex];
+			CurrentTargettedCorridor->OnCorridorUnTargetted();
+			CurrentTargettedCorridorIndex--;
+			CurrentTargettedCorridor = GameplayCorridors[CurrentTargettedCorridorIndex];
+			CurrentTargettedCorridor->OnCorridorTargetted();
 		}
 	}
 }

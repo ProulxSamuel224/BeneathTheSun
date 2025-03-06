@@ -41,7 +41,7 @@ void AACorridor::AddActorToCorridor(AActor* InActor)
 
 }
 
-const USplineComponent* AACorridor::GetSplineFromCorridor() const
+USplineComponent* AACorridor::GetSplineFromCorridor() 
 {
 	if (IsValid(RuntimeSplineActor))
 	{
