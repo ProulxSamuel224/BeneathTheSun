@@ -29,4 +29,9 @@ public:
 	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = "General", AdvancedDisplay)
 	FVector InitialPosition = FVector(0, 0, 100);
 	
+	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = "AI", AdvancedDisplay)
+	float GlobalTokenCooldown = 2.0f;
+
+	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = "AI", AdvancedDisplay)
+	int MaxAIAttackTokens = 3;
 };

@@ -6,6 +6,7 @@
 #include "GameFramework/PlayerController.h"
 #include "PlayerPawnController.generated.h"
 
+class APlayerPawn;
 /**
  * 
  */
@@ -32,4 +33,13 @@ public:
 	void MoveUp();
 	UFUNCTION()
 	void MoveDown();
+
+	UFUNCTION()
+	void TargetUp();
+	UFUNCTION()
+	void TargetDown();
+
+private:
+
+	TObjectPtr<APlayerPawn> PlayerPawn;
 };

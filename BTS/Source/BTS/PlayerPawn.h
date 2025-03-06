@@ -18,6 +18,7 @@
 class UBTSAbilitySystemComponent;
 class UInputMappingContext;
 class UInputAction;
+class AACorridor;
 
 UCLASS()
 class BTS_API APlayerPawn : public APawn, public IAbilitySystemInterface, public IGameplayTagAssetInterface
@@ -102,6 +103,8 @@ public:
 	void OnPawnDied();
 
 	void MoveToLocation(FVector NewLocation);
+	
+	void SetTargettedCorridor(const AACorridor& Corridor);
 
 private:
 	void SetAttributeSetChangeDelegates();
@@ -121,5 +124,7 @@ private:
 	bool bIsMoving = false;
 
 	float MovementAlpha = 0.f;
+
+	AACorridor* TargettedCorrido = nullptr;
 
 };

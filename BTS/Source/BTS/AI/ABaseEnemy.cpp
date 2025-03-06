@@ -21,6 +21,7 @@ AABaseEnemy::AABaseEnemy()
 	RootComponent = CollisionShape;
 
 	EnemyAttributeSet = CreateDefaultSubobject<UEnemyAttributeSet>(TEXT("EnemyAttributes"));
+	ShipAttributeSet = CreateDefaultSubobject<UShipAttributeSet>(TEXT("ShipAttributes"));
 }
 
 // Called when the game starts or when spawned
@@ -37,11 +38,11 @@ void AABaseEnemy::BeginPlay()
 	{
 		AbilitySystemComponent->InitAbilityActorInfo(this, this);
 		AbilitySystemComponent->AddAttributeSetSubobject(EnemyAttributeSet);
-		
+		AbilitySystemComponent->AddAttributeSetSubobject(ShipAttributeSet);
 
 		AbilitySystemComponent->InitializeComponent();
 
-		//AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(UShipAttributeSet::GetHullAttribute()).AddUObject(this, &APlayerPawn::OnHullChanged);
+		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(UShipAttributeSet::GetHullAttribute()).AddUObject(this, &AABaseEnemy::OnHullChanged);
 
 	}
 	
@@ -107,6 +108,22 @@ UAbilitySystemComponent* AABaseEnemy::GetAbilitySystemComponent() const
 
 void AABaseEnemy::OnCollisionHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	GEngine->AddOnScreenDebugMessage(2, 10, FColor::Blue, "PlayerPawn Hit");
+	GEngine->AddOnScreenDebugMessage(2, 10, FColor::Blue, "Enemy Hit");
 }
 
+
+void AABaseEnemy::OnHullChanged(const FOnAttributeChangeData& Data)
+{
+	float NewHealth = Data.NewValue;
+	float OldHealth = Data.OldValue;
+
+	UE_LOG(LogTemp, Log, TEXT("Health changed from %f to %f"), OldHealth, NewHealth);
+	GEngine->AddOnScreenDebugMessage(3, 10, FColor::Green, "Old Health" + FString::SanitizeFloat(OldHealth));
+	GEngine->AddOnScreenDebugMessage(4, 10, FColor::Green, "New Health" + FString::SanitizeFloat(NewHealth));
+
+	if (NewHealth <= 0.1f)
+	{
+		Destroy();
+	}
+
+}

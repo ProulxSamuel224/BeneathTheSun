@@ -11,6 +11,10 @@ void APlayerPawnController::BeginPlay()
     check(InputComponent);
     InputComponent->BindAction("MoveUp", EInputEvent::IE_Pressed, this, &APlayerPawnController::MoveUp);
     InputComponent->BindAction("MoveDown", EInputEvent::IE_Pressed, this, &APlayerPawnController::MoveDown);
+    InputComponent->BindAction("TargetUp", EInputEvent::IE_Pressed, this, &APlayerPawnController::TargetUp);
+    InputComponent->BindAction("TargetDown", EInputEvent::IE_Pressed, this, &APlayerPawnController::TargetDown);
+
+    PlayerPawn = Cast<APlayerPawn>(GetOwner());
 }
 
 void APlayerPawnController::MoveUp()
@@ -38,4 +42,14 @@ void APlayerPawnController::MoveDown()
     }
 
     GEngine->AddOnScreenDebugMessage(3, 10, FColor::Red, "MoveDown", false);
+}
+
+void APlayerPawnController::TargetUp()
+{
+
+}
+
+void APlayerPawnController::TargetDown()
+{
+
 }

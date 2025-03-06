@@ -8,6 +8,7 @@
 #include "GameplayAbilities/Public/AbilitySystemComponent.h"
 
 #include "BTS/EnemyAttributeSet.h"
+#include "BTS/ShipAttributeSet.h"
 #include "ABaseEnemy.generated.h"
 
 class UBTSAbilitySystemComponent;
@@ -33,6 +34,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AbilitySystem", AdvancedDisplay)
 	UEnemyAttributeSet* EnemyAttributeSet = nullptr;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AbilitySystem", AdvancedDisplay)
+	UShipAttributeSet* ShipAttributeSet = nullptr;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -56,4 +60,7 @@ public:
 	void OnCollisionHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
 
+private: 
+
+	void OnHullChanged(const FOnAttributeChangeData& Data);
 };

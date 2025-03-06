@@ -5,7 +5,7 @@
 #include "UGameManager.h"
 #include "PlayerPawn.h"
 
-#include "BTSBaseEnemyPawn.h"
+#include "AI/ABaseEnemy.h"
 
 // Sets default values
 AAProjectile::AAProjectile()
@@ -20,11 +20,11 @@ AAProjectile::AAProjectile()
 	ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovement"));
 
 	ProjectileMovementComponent->SetUpdatedComponent(CollisionShape);
-	ProjectileMovementComponent->InitialSpeed = 3000.0f;
+	/*ProjectileMovementComponent->InitialSpeed = 3000.0f;
 	ProjectileMovementComponent->MaxSpeed = 3000.0f;
 	ProjectileMovementComponent->bRotationFollowsVelocity = true;
 	ProjectileMovementComponent->bShouldBounce = true;
-	ProjectileMovementComponent->Bounciness = 0.3f;
+	ProjectileMovementComponent->Bounciness = 0.3f;*/
 	ProjectileMovementComponent->ProjectileGravityScale = 0.0f;
 
 	RootComponent = CollisionShape;
@@ -90,11 +90,13 @@ void AAProjectile::OnCollisionHit(UPrimitiveComponent* HitComp, AActor* OtherAct
 
 			Destroy();
 		}
-		if (ABTSBaseEnemyPawn* Enemy = Cast<ABTSBaseEnemyPawn>(OtherActor))
+		if (AABaseEnemy* Enemy = Cast<AABaseEnemy>(OtherActor))
 		{
 			const UGameplayEffect* GameplayEffect = HitDamageEffect->GetDefaultObject<UGameplayEffect>();
 			const FGameplayEffectContextHandle EffectContext = Enemy->GetAbilitySystemComponent()->MakeEffectContext();
 			Enemy->GetAbilitySystemComponent()->ApplyGameplayEffectToSelf(GameplayEffect, 1.f, EffectContext);
+
+			Destroy();
 		}
 	}
 }
