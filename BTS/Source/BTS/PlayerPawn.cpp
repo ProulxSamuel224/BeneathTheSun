@@ -7,6 +7,8 @@
 #include "PlayerAttributeSet.h"
 #include "BTS/GAS/BTSAbilitySystemComponent.h"
 
+#include "WeaponActor.h"
+
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "UGameManager.h"
@@ -34,6 +36,10 @@ APlayerPawn::APlayerPawn()
 
 	PlayerAttributeSet = CreateDefaultSubobject<UPlayerAttributeSet>(TEXT("PlayerAttributes"));
 	ShipAttributeSet = CreateDefaultSubobject<UShipAttributeSet>(TEXT("ShipAttributes"));
+	WeaponOneAttachPoint = CreateDefaultSubobject<USceneComponent>(TEXT("Weapon One"));
+	WeaponTwoAttachPoint = CreateDefaultSubobject<USceneComponent>(TEXT("Weapon Two"));
+	WeaponOneAttachPoint->SetupAttachment(RootComponent);
+	WeaponTwoAttachPoint->SetupAttachment(RootComponent);
 
 }
 
@@ -107,6 +113,17 @@ void APlayerPawn::BeginPlay()
 		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(UShipAttributeSet::GetHullAttribute()).AddUObject(this, &APlayerPawn::OnHullChanged);
 		
 	}
+
+	if (IsValid(WeaponSlotOne))
+	{
+		EquippedWeaponOne = EquipWeapon(WeaponOneAttachPoint, WeaponSlotOne);
+	}
+	if (IsValid(WeaponSlotTwo))
+	{
+		EquippedWeaponTwo = EquipWeapon(WeaponTwoAttachPoint, WeaponSlotTwo);
+	}
+
+	SwitchWeapon();
 }
 
 void APlayerPawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -130,7 +147,7 @@ void APlayerPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 		Input->BindAction(MoveDownAction, ETriggerEvent::Completed, this, &APlayerPawn::MoveDown);
 		Input->BindAction(TargetUpAction, ETriggerEvent::Completed, this, &APlayerPawn::TargetUp);
 		Input->BindAction(TargetDownAction, ETriggerEvent::Completed, this, &APlayerPawn::TargetDown);
-
+		Input->BindAction(SwitchWeaponAction, ETriggerEvent::Completed, this, &APlayerPawn::SwitchWeapon);
 
 		for (const auto& ActivableAbility : ActivableAbilities)
 		{
@@ -285,4 +302,59 @@ void APlayerPawn::ActivateAbilityFromInput(const FInputActionValue& Value, UInpu
 	}
 }
 
+AWeaponActor* APlayerPawn::EquipWeapon(USceneComponent* AttachPoint, TSubclassOf<AWeaponActor> Weapon)
+{
+	FActorSpawnParameters Params;
+	
+	AWeaponActor* SpawnedWeapon = GetWorld()->SpawnActor<AWeaponActor>( Weapon,AttachPoint->GetComponentLocation(), AttachPoint->GetComponentRotation(), Params);
+
+	
+	SpawnedWeapon->AttachToComponent(AttachPoint, FAttachmentTransformRules::SnapToTargetIncludingScale);
+
+	if (SpawnedWeapon != nullptr)
+	{
+		return SpawnedWeapon;
+	}
+
+	return nullptr;
+}
+
+void APlayerPawn::SwitchWeapon()
+{
+	if ((EquippedWeaponOne == nullptr) && (EquippedWeaponTwo== nullptr))
+	{
+		
+		GEngine->AddOnScreenDebugMessage(3, 10, FColor::Blue, "No Weapon");
+		return;
+	}
+
+	if (EquippedWeaponOne == nullptr)
+	{
+		SelectedWeapon = EquippedWeaponTwo;
+	}
+	
+	if (EquippedWeaponTwo == nullptr)
+	{
+		SelectedWeapon = EquippedWeaponOne;
+	}
+
+	if (SelectedWeapon == EquippedWeaponOne)
+	{
+		SelectedWeapon = EquippedWeaponTwo;
+	}
+	else
+	{
+		SelectedWeapon = EquippedWeaponOne;
+	}
+}
+
+
+AWeaponActor* APlayerPawn::GetSelectedWeapon()
+{
+	if (SelectedWeapon != nullptr)
+	{
+		return SelectedWeapon;
+	}
+	return nullptr;
+}
 

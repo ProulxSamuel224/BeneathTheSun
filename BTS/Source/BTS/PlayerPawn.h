@@ -19,6 +19,7 @@ class UBTSAbilitySystemComponent;
 class UInputMappingContext;
 class UInputAction;
 class AACorridor;
+class AWeaponActor;
 
 UCLASS()
 class BTS_API APlayerPawn : public APawn, public IAbilitySystemInterface, public IGameplayTagAssetInterface
@@ -55,6 +56,9 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	UInputAction* TargetDownAction = nullptr;
+	
+	UPROPERTY(EditAnywhere)
+	UInputAction* SwitchWeaponAction = nullptr;
 
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "AbilitySystem", AdvancedDisplay)
 	UPlayerAttributeSet* PlayerAttributeSet = nullptr;
@@ -65,6 +69,15 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AbilitySystem", AdvancedDisplay)
 	TMap<UInputAction*, TSubclassOf<UBTSGameplayAbility>> ActivableAbilities;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon", AdvancedDisplay)
+	TSubclassOf<AWeaponActor> WeaponSlotOne;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon", AdvancedDisplay)
+	TSubclassOf<AWeaponActor> WeaponSlotTwo;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon", AdvancedDisplay)
+	USceneComponent* WeaponOneAttachPoint = nullptr;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon", AdvancedDisplay)
+	USceneComponent* WeaponTwoAttachPoint = nullptr;
+	
 	UPROPERTY(EditDefaultsOnly)
 	float MoveToSpeed = 0.1f;
 
@@ -115,6 +128,11 @@ public:
 
 	void MoveToLocation(FVector NewLocation);
 
+	AWeaponActor* EquipWeapon(USceneComponent* AttachPoint, TSubclassOf<AWeaponActor> Weapon);
+
+	void SwitchWeapon();
+
+	AWeaponActor* GetSelectedWeapon();
 
 private:
 	void SetAttributeSetChangeDelegates();
@@ -123,17 +141,22 @@ private:
 
 	void ActivateAbilityFromInput(const FInputActionValue& Value, UInputAction* InputAction);
 
-
+	
 private:
 
 	FVector MoveToTargetLocation = FVector::ZeroVector;
 	FVector MoveToInitiallocation = FVector::ZeroVector;
 
+	AWeaponActor* EquippedWeaponOne = nullptr;
 	
-	
+	AWeaponActor* EquippedWeaponTwo = nullptr;
+
+	AWeaponActor* SelectedWeapon = nullptr;
 	bool bIsMoving = false;
 
 	float MovementAlpha = 0.f;
+
+
 
 
 };
