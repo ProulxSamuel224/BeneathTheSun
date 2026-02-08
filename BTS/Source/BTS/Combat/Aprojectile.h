@@ -6,11 +6,12 @@
 #include "Components/SphereComponent.h"
 #include "Components/SplineComponent.h"
 
+#include "BTS/Base/BTSBasePawn.h"
 #include "GameFramework/ProjectileMovementComponent.h"
-#include "PawnResourceComponent.h"
 #include "GameplayEffect.h"
-#include "ACorridor.h"
+#include "BTS/GameFramework/ACorridor.h"
 #include "AProjectile.generated.h"
+
 
 	UCLASS()
 		class BTS_API AAProjectile : public AActor
@@ -32,6 +33,12 @@
 
 		UPROPERTY(EditDefaultsOnly)
 		TSubclassOf<UGameplayEffect> HitDamageEffect;
+
+		UPROPERTY(EditDefaultsOnly)
+		FGameplayTag DamageMagnitudeTag = FGameplayTag::EmptyTag;
+
+		UPROPERTY(EditDefaultsOnly)
+		float DamageValue = 0.0f;
 
 		UPROPERTY(Transient)
 		AACorridor* CurrentCorridor = nullptr;
@@ -64,4 +71,13 @@
 
 
 		void SetProjectileDirection(const FVector& ShootDirection);
+
+
+	protected: 
+
+		UPROPERTY(Transient)
+		ABTSBasePawn* OwnerPawn = nullptr;
+
+		UPROPERTY(Transient)
+		UAbilitySystemComponent* OwnerASC = nullptr;
 	};

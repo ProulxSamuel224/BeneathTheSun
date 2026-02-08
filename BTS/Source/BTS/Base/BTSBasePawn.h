@@ -2,37 +2,30 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
 #include "AbilitySystemInterface.h"
-#include "GameplayAbilities/Public/AbilitySystemComponent.h"
-#include "BTS/Base/BTSBasePawn.h"
-
-#include "BTS/GAS/AttributeSets/EnemyAttributeSet.h"
 #include "BTS/GAS/AttributeSets/ShipAttributeSet.h"
-#include "ABaseEnemy.generated.h"
+#include "GameplayAbilities/Public/AbilitySystemComponent.h"
+
+#include "GameFramework/Pawn.h"
+#include "BTSBasePawn.generated.h"
+
 
 class UBTSAbilitySystemComponent;
 
 UCLASS()
-class BTS_API AABaseEnemy : public ABTSBasePawn
+class BTS_API ABTSBasePawn : public APawn, public IAbilitySystemInterface, public IGameplayTagAssetInterface
 {
 	GENERATED_BODY()
-	
-public:	
-	// Sets default values for this actor's properties
-	AABaseEnemy();
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	UShapeComponent* CollisionShape = nullptr;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mesh", AdvancedDisplay)
-	UStaticMeshComponent* StaticMesh = nullptr;
+public:
+	// Sets default values for this pawn's properties
+	ABTSBasePawn();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AbilitySystem", AdvancedDisplay)
-	UEnemyAttributeSet* EnemyAttributeSet = nullptr;
+	UBTSAbilitySystemComponent* AbilitySystemComponent = nullptr;
 
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AbilitySystem", AdvancedDisplay)
+	UShipAttributeSet* ShipAttributeSet = nullptr;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -41,9 +34,10 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	//~ Begin IAbilitySystemInterface
+	/** Returns our Ability System Component. */
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
-
-
+	//~ End IAbilitySystemInterface
 	void AddLooseGameplayTag(FGameplayTag InTag) const;
 	void RemoveLooseGameplayTag(FGameplayTag InTag) const;
 	virtual void GetOwnedGameplayTags(FGameplayTagContainer& TagContainer) const override;
@@ -51,12 +45,7 @@ public:
 	virtual bool HasAllMatchingGameplayTags(const FGameplayTagContainer& TagContainer) const override;
 	virtual bool HasAnyMatchingGameplayTags(const FGameplayTagContainer& TagContainer) const override;
 
+	// Called to bind functionality to input
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	UFUNCTION()
-	void OnCollisionHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
-
-
-private: 
-
-	void OnHullChanged(const FOnAttributeChangeData& Data);
 };

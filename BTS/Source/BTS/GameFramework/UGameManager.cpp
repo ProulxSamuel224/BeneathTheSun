@@ -2,7 +2,6 @@
 
 
 #include "UGameManager.h"
-#include "ResourceObject.h"
 #include "GameplaySettings.h"
 
 void UUGameManager::Initialize(FSubsystemCollectionBase& Collection)
@@ -98,10 +97,11 @@ AAProjectile* UUGameManager::SpawnProjectileOnCorridor(int CorridorIndex, TSubcl
 	return nullptr;
 }
 
-AAProjectile* UUGameManager::ShootProjectile(TSubclassOf<AAProjectile> ProjectileToSpawn, const FVector& SpawnLocation, const FVector& Direction)
+AAProjectile* UUGameManager::ShootProjectile(TSubclassOf<AAProjectile> ProjectileToSpawn, const FVector& SpawnLocation, const FVector& Direction, ABTSBasePawn* AbilityOwner)
 {
 	UWorld* World = GetWorld();
-	const FActorSpawnParameters SpawnParams;
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.Owner = AbilityOwner;
 
 	if (IsValid(World))
 	{
@@ -112,16 +112,6 @@ AAProjectile* UUGameManager::ShootProjectile(TSubclassOf<AAProjectile> Projectil
 		return NewProjectile;
 	}
 	return nullptr;
-}
-
-bool UUGameManager::DealDamageBetweenActors(UPawnResourceComponent* DamagedTargetComp, UPawnResourceComponent* HitSourceComp)
-{
-	UResourceObject* DamagedResource = DamagedTargetComp->GetResourceByType(EResourceType::Health);
-	UResourceObject* HitSourceResource = HitSourceComp->GetResourceByType(EResourceType::Damage);
-
-	DamagedResource->ChangeCurrentValue(- HitSourceResource->GetCurrentValue());
-	DamagedTargetComp->OnResourceChanged(DamagedResource);
-	return false;
 }
 
 void UUGameManager::MovePlayerPawnOnCorridor(EMovementType MovementType)

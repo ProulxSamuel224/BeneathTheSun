@@ -2,7 +2,6 @@
 
 
 #include "PlayerPawnController.h"
-#include "UGameManager.h"
 
 void APlayerPawnController::BeginPlay()
 {

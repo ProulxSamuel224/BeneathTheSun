@@ -1,11 +1,11 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
+#include "AbilitySystemBlueprintLibrary.h"
 #include "AProjectile.h"
-#include "UGameManager.h"
-#include "PlayerPawn.h"
+#include "BTS/GameFramework/UGameManager.h"
+#include "BTS/Player/PlayerPawn.h"
 
-#include "AI/ABaseEnemy.h"
+#include "BTS/AI/ABaseEnemy.h"
 
 // Sets default values
 AAProjectile::AAProjectile()
@@ -40,6 +40,16 @@ void AAProjectile::BeginPlay()
 	Super::BeginPlay();
 
 	CollisionShape->OnComponentHit.AddDynamic(this, &AAProjectile::OnCollisionHit);
+
+	if (GetOwner())
+	{
+		OwnerPawn = Cast<ABTSBasePawn>(GetOwner());
+
+		if (OwnerPawn)
+		{
+			OwnerASC = OwnerPawn->GetAbilitySystemComponent();
+		}
+	}
 }
 
 void AAProjectile::InitProjectile()
@@ -82,21 +92,18 @@ void AAProjectile::OnCollisionHit(UPrimitiveComponent* HitComp, AActor* OtherAct
 {
 	if (IsValid(OtherActor)&& IsValid(HitDamageEffect))
 	{
-		if (APlayerPawn* PlayerPawn = Cast<APlayerPawn>(OtherActor))
+		if (ABTSBasePawn* HitPawn = Cast<ABTSBasePawn>(OtherActor))
 		{
-			const UGameplayEffect* GameplayEffect = HitDamageEffect->GetDefaultObject<UGameplayEffect>();
-			const FGameplayEffectContextHandle EffectContext = PlayerPawn->GetAbilitySystemComponent()->MakeEffectContext();
-			PlayerPawn->GetAbilitySystemComponent()->ApplyGameplayEffectToSelf(GameplayEffect, 1.f, EffectContext);
+			UAbilitySystemComponent* targetASC = HitPawn->GetAbilitySystemComponent();
+			if (targetASC)
+			{
+				FGameplayEffectSpecHandle DamageSpec =  OwnerASC->MakeOutgoingSpec(HitDamageEffect, 1, OwnerASC->MakeEffectContext());
+				UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(DamageSpec, DamageMagnitudeTag, DamageValue);
 
-			Destroy();
-		}
-		if (AABaseEnemy* Enemy = Cast<AABaseEnemy>(OtherActor))
-		{
-			const UGameplayEffect* GameplayEffect = HitDamageEffect->GetDefaultObject<UGameplayEffect>();
-			const FGameplayEffectContextHandle EffectContext = Enemy->GetAbilitySystemComponent()->MakeEffectContext();
-			Enemy->GetAbilitySystemComponent()->ApplyGameplayEffectToSelf(GameplayEffect, 1.f, EffectContext);
+				OwnerASC->ApplyGameplayEffectSpecToTarget(*DamageSpec.Data.Get(), targetASC);
 
-			Destroy();
+				Destroy();
+			}
 		}
 	}
 }

@@ -8,10 +8,11 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
 #include "GameplayAbilities/Public/AbilitySystemComponent.h"
-#include "PlayerAttributeSet.h"
-#include "ShipAttributeSet.h"
-#include "PlayerPawnController.h"
-#include "GAS/BTSGameplayAbility.h"
+#include "BTS/GAS/AttributeSets/PlayerAttributeSet.h"
+#include "BTS/GAS/AttributeSets/ShipAttributeSet.h"
+#include "BTS/Player/PlayerPawnController.h"
+#include "BTS/GAS/BTSGameplayAbility.h"
+#include "BTS/Base/BTSBasePawn.h"
 
 #include "PlayerPawn.generated.h"
 
@@ -22,7 +23,7 @@ class AACorridor;
 class AWeaponActor;
 
 UCLASS()
-class BTS_API APlayerPawn : public APawn, public IAbilitySystemInterface, public IGameplayTagAssetInterface
+class BTS_API APlayerPawn : public ABTSBasePawn
 {
 	GENERATED_BODY()
 
@@ -38,9 +39,6 @@ public:
 
 	UPROPERTY(EditAnywhere, BLueprintReadWrite, Category = "Controller", AdvancedDisplay)
 	APlayerPawnController* PlayerPawnController = nullptr;
-
-	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "AbilitySystem",AdvancedDisplay)
-	UBTSAbilitySystemComponent* AbilitySystemComponent = nullptr;
 
 	UPROPERTY(EditAnywhere)
 	UInputMappingContext* DefaultMappingContext = nullptr;
@@ -62,9 +60,6 @@ public:
 
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "AbilitySystem", AdvancedDisplay)
 	UPlayerAttributeSet* PlayerAttributeSet = nullptr;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AbilitySystem", AdvancedDisplay)
-	UShipAttributeSet* ShipAttributeSet = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AbilitySystem", AdvancedDisplay)
 	TMap<UInputAction*, TSubclassOf<UBTSGameplayAbility>> ActivableAbilities;

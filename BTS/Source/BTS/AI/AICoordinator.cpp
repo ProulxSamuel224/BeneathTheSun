@@ -2,7 +2,7 @@
 
 
 #include "BTS/AI/AICoordinator.h"
-#include "BTS/GameplaySettings.h"
+#include "BTS/GameFramework/GameplaySettings.h"
 
 void UAICoordinator::Initialize(FSubsystemCollectionBase& Collection)
 {

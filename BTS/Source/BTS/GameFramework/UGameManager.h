@@ -5,9 +5,9 @@
 #include "CoreMinimal.h"
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "ACorridor.h"
-#include "AProjectile.h"
-#include "PlayerPawn.h"
-#include "PlayerPawnController.h"
+#include "BTS/Combat/AProjectile.h"
+#include "BTS/Player/PlayerPawn.h"
+#include "BTS/Player/PlayerPawnController.h"
 
 #include "UGameManager.generated.h"
 
@@ -51,9 +51,8 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 
-	AAProjectile* ShootProjectile(TSubclassOf<AAProjectile> ProjectileToSpawn, const FVector& SpawnLocation, const FVector& Direction);
-	UFUNCTION(BlueprintCallable)
-	bool DealDamageBetweenActors(UPawnResourceComponent* DamagedTargetComp, UPawnResourceComponent* HitSourceComp);
+	AAProjectile* ShootProjectile(TSubclassOf<AAProjectile> ProjectileToSpawn, const FVector& SpawnLocation, const FVector& Direction, ABTSBasePawn* AbilityOwner);
+	
 
 	void MovePlayerPawnOnCorridor(EMovementType MovementType);
 

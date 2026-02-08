@@ -4,14 +4,14 @@
 #include "PlayerPawn.h"
 #include "Components/ShapeComponent.h"
 #include "Components/SphereComponent.h"
-#include "PlayerAttributeSet.h"
+#include "BTS/GAS/AttributeSets/PlayerAttributeSet.h"
 #include "BTS/GAS/BTSAbilitySystemComponent.h"
 
-#include "WeaponActor.h"
+#include "BTS/Combat/WeaponActor.h"
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
-#include "UGameManager.h"
+#include "BTS/GameFramework/UGameManager.h"
 
 
 // Sets default values
