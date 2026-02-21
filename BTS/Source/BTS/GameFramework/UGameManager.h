@@ -60,6 +60,8 @@ public:
 
 private:
 
+	void HandlePostLoadMap(UWorld* World, const FWorldInitializationValues WorldInitializationValues);
+
 	APlayerPawn* SpawnedPlayer = nullptr;
 
 	uint8 CurrentPlayerCorridorIndex = 0;

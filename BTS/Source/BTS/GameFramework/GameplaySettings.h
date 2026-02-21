@@ -2,9 +2,12 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
 #include "Engine/DeveloperSettings.h"
+
 #include "ACorridor.h"
+
+#include "BTS/Combat/CombatTypes.h"
+
 #include "GameplaySettings.generated.h"
 
 /**
@@ -34,4 +37,7 @@ public:
 
 	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = "AI", AdvancedDisplay)
 	int MaxAIAttackTokens = 3;
+
+	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = "AI", AdvancedDisplay)
+	FCombatSettings DefaultCombatSettings;
 };

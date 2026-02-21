@@ -4,19 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "Subsystems/GameInstanceSubsystem.h"
-
+#include "BTS/Combat/CombatTypes.h"
 #include "ABaseEnemy.h"
 #include "AICoordinator.generated.h"
 
-USTRUCT(BlueprintType)
-struct FAttackToken
-{
-	GENERATED_BODY()
 
-	bool bIsAvailable = true;
-	bool bIsGranted = false;
-	float Cooldown = 0.f;
-};
 
 /**
  * 
@@ -30,6 +22,16 @@ public:
 
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 	virtual void Deinitialize() override;
+
+	void GrantAttackToken(AABaseEnemy* Enemy);
+	void SetTokenInCooldown(FAttackToken& InToken);
+	
+	//TimerDelegate
+	UFUNCTION()
+	void ResetToken(FAttackToken& InToken);
+
+private:
+	void HandlePostLoadMap(UWorld* World, const FWorldInitializationValues WorldInitializationValues);
 
 	TArray<TObjectPtr<AABaseEnemy>> SpawnedEnemies;
 

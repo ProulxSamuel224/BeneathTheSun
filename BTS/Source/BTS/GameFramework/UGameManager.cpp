@@ -7,6 +7,9 @@
 void UUGameManager::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
+
+
+	FWorldDelegates::OnPostWorldInitialization.AddUObject(this, &UUGameManager::HandlePostLoadMap);
 }
 
 void UUGameManager::Deinitialize()
@@ -171,4 +174,10 @@ void UUGameManager::UpdateTargettedCorridor(bool bIsUp)
 			CurrentTargettedCorridor->OnCorridorTargetted();
 		}
 	}
+}
+
+void UUGameManager::HandlePostLoadMap(UWorld* World, const FWorldInitializationValues WorldInitializationValues)
+{
+	
+
 }
