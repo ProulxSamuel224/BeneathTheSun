@@ -4,6 +4,8 @@
 
 #include "CombatTypes.generated.h"
 
+class AABaseEnemy;
+
 USTRUCT(BlueprintType)
 struct FAISettings
 {
@@ -26,6 +28,9 @@ struct FCombatSettings
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int MaxEnemy = 5;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<TSubclassOf<AABaseEnemy>> enemyEntries;
 
 };
 

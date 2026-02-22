@@ -3,11 +3,11 @@
 
 #include "UGameManager.h"
 #include "GameplaySettings.h"
+#include "BTS/AI/AICoordinator.h"
 
 void UUGameManager::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
-
 
 	FWorldDelegates::OnPostWorldInitialization.AddUObject(this, &UUGameManager::HandlePostLoadMap);
 }
@@ -178,6 +178,8 @@ void UUGameManager::UpdateTargettedCorridor(bool bIsUp)
 
 void UUGameManager::HandlePostLoadMap(UWorld* World, const FWorldInitializationValues WorldInitializationValues)
 {
-	
+	const UGameplaySettings* GameplaySettings = GetDefault<UGameplaySettings>();
+	UAICoordinator* AICoordinator = GetGameInstance()->GetSubsystem<UAICoordinator>();
 
+	AICoordinator->HandleCombatStart(GameplaySettings->DefaultCombatSettings, GetGameplayCorridors());
 }

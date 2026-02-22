@@ -12,7 +12,9 @@ AACorridor::AACorridor()
 	PrimaryActorTick.bCanEverTick = true;
 
 	StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
+	
 	RootComponent = StaticMesh;
+	
 }
 
 // Called when the game starts or when spawned
@@ -28,6 +30,7 @@ void AACorridor::BeginPlay()
 		CorridorStartLocation = RuntimeSplineActor->GetActorLocation();
 		CorridorEndLocation = GetSplineFromCorridor()->GetLocationAtSplinePoint(GetSplineFromCorridor()->GetNumberOfSplinePoints() - 2, ESplineCoordinateSpace::World);
 	}
+
 }
 
 // Called every frame

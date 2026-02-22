@@ -41,6 +41,26 @@ void UAICoordinator::SetTokenInCooldown(FAttackToken& InToken)
 	}
 }
 
+void UAICoordinator::HandleCombatStart(FCombatSettings CombatSettings, const TArray<AACorridor*>& GameplayCorridors)
+{
+	for (AACorridor* Corridor : GameplayCorridors)
+	{
+		if (Corridor != nullptr)
+		{
+			FVector SpawnLocation = Corridor->GetEnemySpawnLocation();
+			UWorld * World = GetWorld();
+		
+
+			if (IsValid(World))
+			{
+				AABaseEnemy* NewEnemy = World->SpawnActor<AABaseEnemy>(CombatSettings.enemyEntries[0], SpawnLocation, FRotator::ZeroRotator);
+				Corridor->SetIsOccupiedByEnemy(true);
+				SpawnedEnemies.Add(NewEnemy);
+			}
+		}
+	}
+}
+
 void UAICoordinator::ResetToken(FAttackToken& InToken)
 {
 	InToken.CooldownTimerHandle.Invalidate();

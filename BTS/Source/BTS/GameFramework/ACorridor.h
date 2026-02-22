@@ -27,6 +27,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Mesh", AdvancedDisplay)
 	TArray<UMaterialInterface*> MaterialList;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spawning", AdvancedDisplay)
+	FVector EnemyLocationOffset = FVector::ZeroVector;
+
 	UPROPERTY(Transient)
 	AActor* RuntimeSplineActor = nullptr;
 
@@ -54,6 +57,15 @@ public:
 	const FVector GetCorridorEndLocation() { return CorridorEndLocation; }
 	UFUNCTION(BlueprintCallable)
 	const FVector GetCorridorStartLocation() { return CorridorStartLocation; }
+	
+	UFUNCTION(BlueprintCallable)
+	const FVector GetEnemySpawnLocation() { return GetActorLocation() + EnemyLocationOffset; }
+
+	UFUNCTION(BlueprintCallable)
+	bool IsOccupiedByEnemy() const { return bIsOccupiedByEnemy; }
+
+	UFUNCTION(BlueprintCallable)
+	void SetIsOccupiedByEnemy(bool bOccupied) { bIsOccupiedByEnemy = bOccupied; }
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnCorridorTargetted();
@@ -65,4 +77,6 @@ private:
 	 FVector CorridorStartLocation;
 
 	 FVector CorridorEndLocation;
+
+	 bool bIsOccupiedByEnemy = false;
 };

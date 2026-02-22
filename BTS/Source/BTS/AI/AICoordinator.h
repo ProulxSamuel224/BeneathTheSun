@@ -8,7 +8,7 @@
 #include "ABaseEnemy.h"
 #include "AICoordinator.generated.h"
 
-
+class AACorridor;
 
 /**
  * 
@@ -25,6 +25,7 @@ public:
 
 	void GrantAttackToken(AABaseEnemy* Enemy);
 	void SetTokenInCooldown(FAttackToken& InToken);
+	void HandleCombatStart(FCombatSettings CombatSettings, const TArray<AACorridor*>& GameplayCorridors);
 	
 	//TimerDelegate
 	UFUNCTION()
@@ -33,7 +34,7 @@ public:
 private:
 	void HandlePostLoadMap(UWorld* World, const FWorldInitializationValues WorldInitializationValues);
 
-	TArray<TObjectPtr<AABaseEnemy>> SpawnedEnemies;
+	TArray<AABaseEnemy*> SpawnedEnemies;
 
 	TArray<FAttackToken> AvailableAttackTokens;
 
