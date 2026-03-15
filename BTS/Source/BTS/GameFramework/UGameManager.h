@@ -22,18 +22,17 @@ class BTS_API UUGameManager : public UGameInstanceSubsystem
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 	virtual void Deinitialize() override;
 
-	
-	UFUNCTION(BlueprintCallable)
-	void SpawnCorridor(const FVector InPosition);
-
-
-	UFUNCTION(BlueprintCallable)
-	void SpawnPlayer(APlayerPawn* Player);
-
 	UPROPERTY(Transient)
 	TArray<AACorridor*> GameplayCorridors;
 
 public:
+
+	UFUNCTION(BlueprintCallable)
+	void SpawnCorridor(const FVector InPosition);
+
+	UFUNCTION(BlueprintCallable)
+	void SpawnPlayer(APlayerPawn* Player);
+
 	UFUNCTION(BlueprintCallable)
 	TArray<AACorridor*> GetGameplayCorridors() { return GameplayCorridors; }
 
