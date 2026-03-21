@@ -181,5 +181,5 @@ void UUGameManager::HandlePostLoadMap(UWorld* World, const FWorldInitializationV
 	const UGameplaySettings* GameplaySettings = GetDefault<UGameplaySettings>();
 	UAICoordinator* AICoordinator = GetGameInstance()->GetSubsystem<UAICoordinator>();
 
-	AICoordinator->HandleCombatStart(GameplaySettings->DefaultCombatSettings, GetGameplayCorridors());
+//	AICoordinator->HandleCombatStart(GameplaySettings->DefaultCombatSettings, GetGameplayCorridors());
 }

@@ -26,10 +26,16 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AbilitySystem", AdvancedDisplay)
 	UShipAttributeSet* ShipAttributeSet = nullptr;
+
+	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	virtual void SetAttributeSetChangeDelegates();
 
+private:
+
+	void OnHullChanged(const FOnAttributeChangeData& Data);
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -47,5 +53,8 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	UFUNCTION(BlueprintCallable)
+	const float GetHullAttributeValue();
 
 };

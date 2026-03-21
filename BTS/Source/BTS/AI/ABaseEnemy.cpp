@@ -21,7 +21,6 @@ AABaseEnemy::AABaseEnemy()
 	RootComponent = CollisionShape;
 
 	EnemyAttributeSet = CreateDefaultSubobject<UEnemyAttributeSet>(TEXT("EnemyAttributes"));
-	ShipAttributeSet = CreateDefaultSubobject<UShipAttributeSet>(TEXT("ShipAttributes"));
 }
 
 // Called when the game starts or when spawned
@@ -32,8 +31,6 @@ void AABaseEnemy::BeginPlay()
 	CollisionShape->OnComponentHit.AddDynamic(this, &AABaseEnemy::OnCollisionHit);
 
 
-
-
 	if (IsValid(AbilitySystemComponent))
 	{
 		AbilitySystemComponent->InitAbilityActorInfo(this, this);
@@ -42,10 +39,35 @@ void AABaseEnemy::BeginPlay()
 
 		AbilitySystemComponent->InitializeComponent();
 
-		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(UShipAttributeSet::GetHullAttribute()).AddUObject(this, &AABaseEnemy::OnHullChanged);
+		FGameplayEffectContextHandle Context = AbilitySystemComponent->MakeEffectContext();
+		FGameplayEffectSpecHandle EffectSpec = AbilitySystemComponent->MakeOutgoingSpec(StartupEffect, 1, Context);
+		AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*EffectSpec.Data.Get());
 
+		for (const auto& ActivableAbility : ActivableAbilities)
+		{
+			AbilitySystemComponent->GiveAbility(ActivableAbility);
+		}
 	}
 	
+}
+
+void AABaseEnemy::StartAttackDelay()
+{
+	AISetting.AttackFrequencyCurve;
+	bool found = false;
+	float value = AbilitySystemComponent->GetGameplayAttributeValue(AISetting.AttackFrequencyCurve.Attribute, found);
+	if (found)
+	{
+		float timerValue = AISetting.AttackFrequencyCurve.Curve->GetFloatValue(value);
+		GetWorld()->GetTimerManager().SetTimer(AttackTimerHandle, this, &AABaseEnemy::SelectAndUseAbility, timerValue);
+	}
+}
+
+void AABaseEnemy::SelectAndUseAbility()
+{
+	GetWorld()->GetTimerManager().ClearTimer(AttackTimerHandle);
+	AbilitySystemComponent->TryActivateAbilityByClass(ActivableAbilities[0]);
+	OnAttackTokenConsumed.Broadcast(this);
 }
 
 // Called every frame
@@ -111,19 +133,8 @@ void AABaseEnemy::OnCollisionHit(UPrimitiveComponent* HitComp, AActor* OtherActo
 	GEngine->AddOnScreenDebugMessage(2, 10, FColor::Blue, "Enemy Hit");
 }
 
-
-void AABaseEnemy::OnHullChanged(const FOnAttributeChangeData& Data)
-{
-	float NewHealth = Data.NewValue;
-	float OldHealth = Data.OldValue;
-
-	UE_LOG(LogTemp, Log, TEXT("Health changed from %f to %f"), OldHealth, NewHealth);
-	GEngine->AddOnScreenDebugMessage(3, 10, FColor::Green, "Old Health" + FString::SanitizeFloat(OldHealth));
-	GEngine->AddOnScreenDebugMessage(4, 10, FColor::Green, "New Health" + FString::SanitizeFloat(NewHealth));
-
-	if (NewHealth <= 0.1f)
-	{
-		Destroy();
-	}
-
+void AABaseEnemy::SetAttackToken(FAttackToken inToken)
+{ 
+	GrantedAttackToken = inToken;
+	StartAttackDelay();
 }

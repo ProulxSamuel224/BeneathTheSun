@@ -35,7 +35,6 @@ APlayerPawn::APlayerPawn()
 	AbilitySystemComponent = CreateDefaultSubobject<UBTSAbilitySystemComponent>("AbilitySystemComponent", false);
 
 	PlayerAttributeSet = CreateDefaultSubobject<UPlayerAttributeSet>(TEXT("PlayerAttributes"));
-	ShipAttributeSet = CreateDefaultSubobject<UShipAttributeSet>(TEXT("ShipAttributes"));
 	WeaponOneAttachPoint = CreateDefaultSubobject<USceneComponent>(TEXT("Weapon One"));
 	WeaponTwoAttachPoint = CreateDefaultSubobject<USceneComponent>(TEXT("Weapon Two"));
 	WeaponOneAttachPoint->SetupAttachment(RootComponent);
@@ -101,16 +100,12 @@ void APlayerPawn::BeginPlay()
 
 
 
-
 	if (IsValid(AbilitySystemComponent))
 	{
 		AbilitySystemComponent->InitAbilityActorInfo(this, this);
 		AbilitySystemComponent->AddAttributeSetSubobject(PlayerAttributeSet);
-		AbilitySystemComponent->AddAttributeSetSubobject(ShipAttributeSet);
 
 		AbilitySystemComponent->InitializeComponent();
-
-		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(UShipAttributeSet::GetHullAttribute()).AddUObject(this, &APlayerPawn::OnHullChanged);
 		
 	}
 
@@ -247,32 +242,6 @@ void APlayerPawn::OnPawnDied()
 }
 
 
-
-void APlayerPawn::SetAttributeSetChangeDelegates()
-{
-
-}
-
-void APlayerPawn::OnHullChanged(const FOnAttributeChangeData& Data)
-{
-	float NewHealth = Data.NewValue;
-	float OldHealth = Data.OldValue;
-
-	UE_LOG(LogTemp, Log, TEXT("Health changed from %f to %f"), OldHealth, NewHealth);
-	GEngine->AddOnScreenDebugMessage(3, 10, FColor::Blue, "Old Health" + FString::SanitizeFloat(OldHealth));
-	GEngine->AddOnScreenDebugMessage(4, 10, FColor::Blue, "New Health" + FString::SanitizeFloat(NewHealth));
-
-}
-
-const float APlayerPawn::GetHullAttributeValue()
-{
-	if (IsValid(ShipAttributeSet))
-	{
-		return ShipAttributeSet->GetHullAttribute().GetNumericValue(ShipAttributeSet);
-	}
-	return 0.f;
-}	
-
 void APlayerPawn::MoveToLocation(FVector NewLocation)
 {
 	if (IsValid(PlayerAttributeSet))
@@ -300,6 +269,12 @@ void APlayerPawn::ActivateAbilityFromInput(const FInputActionValue& Value, UInpu
 			}
 		}
 	}
+}
+
+void APlayerPawn::SetAttributeSetChangeDelegates()
+{
+	Super::SetAttributeSetChangeDelegates();
+	//PlayerAttributeset delegate
 }
 
 AWeaponActor* APlayerPawn::EquipWeapon(USceneComponent* AttachPoint, TSubclassOf<AWeaponActor> Weapon)

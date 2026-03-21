@@ -1,22 +1,12 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
+#include "AttributeSet.h"
 
 #include "CombatTypes.generated.h"
 
+
 class AABaseEnemy;
-
-USTRUCT(BlueprintType)
-struct FAISettings
-{
-	GENERATED_BODY()
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Damage = 0.f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Cooldown = 0.f;
-};
 
 USTRUCT(BlueprintType)
 struct FCombatSettings
@@ -39,7 +29,51 @@ struct FAttackToken
 {
 	GENERATED_BODY()
 
+	FAttackToken()
+	{
+		TokenID = GenerateID();
+	}
+
 	bool bIsAvailable = true;
 	bool bIsGranted = false;
 	FTimerHandle CooldownTimerHandle;
+
+private:
+	UPROPERTY()
+	int32 TokenID;
+
+	static int32 GenerateID()
+	{
+		static int32 CurrentID = 0;
+		return ++CurrentID;
+	}
+
+public:
+	FORCEINLINE bool operator==(const FAttackToken& Other) const
+	{
+		return TokenID == Other.TokenID;
+	}
+};
+
+USTRUCT(BlueprintType)
+struct FAttributeBasedCurveValue
+{
+	GENERATED_BODY()
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FGameplayAttribute Attribute;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UCurveFloat* Curve = nullptr;
+	
+};
+
+USTRUCT(BlueprintType)
+struct FAISettings
+{
+	GENERATED_BODY()
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FAttributeBasedCurveValue AttackFrequencyCurve;
 };

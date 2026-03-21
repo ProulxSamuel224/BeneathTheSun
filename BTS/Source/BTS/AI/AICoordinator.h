@@ -34,6 +34,8 @@ public:
 private:
 	void HandlePostLoadMap(UWorld* World, const FWorldInitializationValues WorldInitializationValues);
 
+	void OnGrantedTokenConsumed(AABaseEnemy* Enemy);
+
 	TArray<AABaseEnemy*> SpawnedEnemies;
 
 	TArray<FAttackToken> AvailableAttackTokens;

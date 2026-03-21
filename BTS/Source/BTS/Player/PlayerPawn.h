@@ -109,9 +109,6 @@ public:
 	virtual bool HasAllMatchingGameplayTags(const FGameplayTagContainer& TagContainer) const override;
 	virtual bool HasAnyMatchingGameplayTags(const FGameplayTagContainer& TagContainer) const override;
 
-
-	UFUNCTION(BlueprintCallable)
-	const float GetHullAttributeValue();
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnPawnMoved(bool bMoveUp);
 
@@ -130,11 +127,9 @@ public:
 	AWeaponActor* GetSelectedWeapon();
 
 private:
-	void SetAttributeSetChangeDelegates();
-
-	void OnHullChanged(const FOnAttributeChangeData& Data);
 
 	void ActivateAbilityFromInput(const FInputActionValue& Value, UInputAction* InputAction);
+	void SetAttributeSetChangeDelegates() override;
 
 	
 private:
@@ -150,8 +145,5 @@ private:
 	bool bIsMoving = false;
 
 	float MovementAlpha = 0.f;
-
-
-
 
 };

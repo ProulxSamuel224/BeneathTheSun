@@ -9,8 +9,8 @@ void UAICoordinator::Initialize(FSubsystemCollectionBase& Collection)
 	Super::Initialize(Collection);
 
 	const UGameplaySettings* GameplaySettings = GetDefault<UGameplaySettings>();
-	const FAttackToken InitToken;
-	AvailableAttackTokens.Init(InitToken, GameplaySettings->MaxAIAttackTokens);
+	
+	AvailableAttackTokens.Init(FAttackToken(), GameplaySettings->MaxAIAttackTokens);
 
 	FWorldDelegates::OnPostWorldInitialization.AddUObject(this, &UAICoordinator::HandlePostLoadMap);
 }
@@ -26,11 +26,15 @@ void UAICoordinator::GrantAttackToken(AABaseEnemy* Enemy)
 	Token.bIsAvailable = false;
 	Token.bIsGranted = true;
 	GrantedAttackTokens.Add(Token);
+	Enemy->SetAttackToken(Token);
+	Enemy->OnAttackTokenConsumed.AddUObject(this, &UAICoordinator::OnGrantedTokenConsumed);
 }
 
 void UAICoordinator::SetTokenInCooldown(FAttackToken& InToken)
 {
 	const UGameplaySettings* GameplaySettings = GetDefault<UGameplaySettings>();
+	
+	InToken.bIsGranted = false;
 
 	UWorld* world = GetWorld();
 	if (world)
@@ -59,11 +63,16 @@ void UAICoordinator::HandleCombatStart(FCombatSettings CombatSettings, const TAr
 			}
 		}
 	}
+	//Grant first token to a random enemy
+	int randomIndex = FMath::RandRange(0, SpawnedEnemies.Num() - 1);
+	GrantAttackToken(SpawnedEnemies[randomIndex]);
+
 }
 
 void UAICoordinator::ResetToken(FAttackToken& InToken)
 {
 	InToken.CooldownTimerHandle.Invalidate();
+	InToken.bIsAvailable = true;
 }
 
 
@@ -74,4 +83,20 @@ void UAICoordinator::HandlePostLoadMap(UWorld* World, const FWorldInitialization
 	UE_LOG(LogTemp, Log, TEXT("Level loaded: %s"), *World->GetName());
 
 
+}
+
+void UAICoordinator::OnGrantedTokenConsumed(AABaseEnemy* Enemy)
+{
+	Enemy->OnAttackTokenConsumed.RemoveAll(this);
+	
+	FAttackToken GrantedToken = Enemy->GetAttackToken();
+
+	SetTokenInCooldown(GrantedToken);
+	Enemy->OnAttackTokenConsumed.RemoveAll(this);
+
+	GrantedAttackTokens.Remove(GrantedToken);
+	AvailableAttackTokens.Add(GrantedToken);
+
+	int randomIndex = FMath::RandRange(0, SpawnedEnemies.Num() - 1);
+	GrantAttackToken(SpawnedEnemies[randomIndex]);
 }

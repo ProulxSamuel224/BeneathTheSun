@@ -11,12 +11,24 @@ ABTSBasePawn::ABTSBasePawn()
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	ShipAttributeSet = CreateDefaultSubobject<UShipAttributeSet>(TEXT("ShipAttributes"));
+
 }
 
 // Called when the game starts or when spawned
 void ABTSBasePawn::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (IsValid(AbilitySystemComponent))
+	{
+		AbilitySystemComponent->InitAbilityActorInfo(this, this);
+		AbilitySystemComponent->AddAttributeSetSubobject(ShipAttributeSet);
+
+		AbilitySystemComponent->InitializeComponent();
+
+		SetAttributeSetChangeDelegates();
+	}
 	
 }
 
@@ -82,4 +94,32 @@ UAbilitySystemComponent* ABTSBasePawn::GetAbilitySystemComponent() const
 {
 	return AbilitySystemComponent;
 }
+
+
+void ABTSBasePawn::SetAttributeSetChangeDelegates()
+{
+	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(UShipAttributeSet::GetHullAttribute()).AddUObject(this, &ABTSBasePawn::OnHullChanged);
+
+}
+
+void ABTSBasePawn::OnHullChanged(const FOnAttributeChangeData& Data)
+{
+	float NewHealth = Data.NewValue;
+	float OldHealth = Data.OldValue;
+
+	UE_LOG(LogTemp, Log, TEXT("Health changed from %f to %f"), OldHealth, NewHealth);
+	GEngine->AddOnScreenDebugMessage(3, 10, FColor::Blue, "Old Health" + FString::SanitizeFloat(OldHealth));
+	GEngine->AddOnScreenDebugMessage(4, 10, FColor::Blue, "New Health" + FString::SanitizeFloat(NewHealth));
+}
+
+
+const float ABTSBasePawn::GetHullAttributeValue()
+{
+	if (IsValid(ShipAttributeSet))
+	{
+		return ShipAttributeSet->GetHullAttribute().GetNumericValue(ShipAttributeSet);
+	}
+	return 0.f;
+}
+
 

@@ -10,8 +10,10 @@
 #include "BTS/Combat/CombatTypes.h"
 #include "BTS/GAS/AttributeSets/EnemyAttributeSet.h"
 #include "BTS/GAS/AttributeSets/ShipAttributeSet.h"
+#include "BTS/GAS/BTSGameplayAbility.h"
 #include "ABaseEnemy.generated.h"
 
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnAttackTokenConsumed, AABaseEnemy*)
 
 class UBTSAbilitySystemComponent;
 
@@ -40,7 +42,8 @@ public:
 	void OnCollisionHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
 	//AI
-	void SetAttackToken(FAttackToken inToken) { GrantedAttackToken = inToken; }
+	void SetAttackToken(FAttackToken inToken);
+	FAttackToken GetAttackToken() { return GrantedAttackToken; }
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	UShapeComponent* CollisionShape = nullptr;
@@ -51,14 +54,31 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AbilitySystem", AdvancedDisplay)
 	UEnemyAttributeSet* EnemyAttributeSet = nullptr;
 
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "AI", AdvancedDisplay)
+	FAISettings AISetting;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AbilitySystem", AdvancedDisplay)
+	TSubclassOf<UGameplayEffect> StartupEffect = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AbilitySystem", AdvancedDisplay)
+	TArray<TSubclassOf<UBTSGameplayAbility>> ActivableAbilities;
+
+	FOnAttackTokenConsumed OnAttackTokenConsumed;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	UPROPERTY(Transient)
+	UFUNCTION()
+	void SelectAndUseAbility();
+
 	FAttackToken GrantedAttackToken;
 
 private: 
 
-	void OnHullChanged(const FOnAttributeChangeData& Data);
+	void StartAttackDelay();
+	
+
+	FTimerHandle AttackTimerHandle;
+
 };
