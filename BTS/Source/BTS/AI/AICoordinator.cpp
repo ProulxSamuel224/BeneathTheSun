@@ -9,32 +9,36 @@ void UAICoordinator::Initialize(FSubsystemCollectionBase& Collection)
 	Super::Initialize(Collection);
 
 	const UGameplaySettings* GameplaySettings = GetDefault<UGameplaySettings>();
-	
-	AvailableAttackTokens.Init(FAttackToken(), GameplaySettings->MaxAIAttackTokens);
 
 	FWorldDelegates::OnPostWorldInitialization.AddUObject(this, &UAICoordinator::HandlePostLoadMap);
 }
 
 void UAICoordinator::Deinitialize()
 {
+	GrantTokenTimerHandle.Invalidate();
 	Super::Deinitialize();
 }
 
 void UAICoordinator::GrantAttackToken(AABaseEnemy* Enemy)
 {
-	FAttackToken Token = AvailableAttackTokens.Pop();
-	Token.bIsAvailable = false;
-	Token.bIsGranted = true;
-	GrantedAttackTokens.Add(Token);
-	Enemy->SetAttackToken(Token);
-	Enemy->OnAttackTokenConsumed.AddUObject(this, &UAICoordinator::OnGrantedTokenConsumed);
+	FAttackToken& token = SpawnedEnemies[Enemy];
+	if(token.bIsAvailable)
+	{
+		token.bIsAvailable = false;
+		Enemy->OnTokenGranted();
+		Enemy->OnAttackTokenConsumed.AddUObject(this, &UAICoordinator::OnGrantedTokenConsumed);
+	}
+	else
+	{
+		token.bIsAvailable = true;
+	}
+
+	StartTokenGranting();
 }
 
 void UAICoordinator::SetTokenInCooldown(FAttackToken& InToken)
 {
 	const UGameplaySettings* GameplaySettings = GetDefault<UGameplaySettings>();
-	
-	InToken.bIsGranted = false;
 
 	UWorld* world = GetWorld();
 	if (world)
@@ -53,20 +57,19 @@ void UAICoordinator::HandleCombatStart(FCombatSettings CombatSettings, const TAr
 		{
 			FVector SpawnLocation = Corridor->GetEnemySpawnLocation();
 			UWorld * World = GetWorld();
-		
 
 			if (IsValid(World))
 			{
-				AABaseEnemy* NewEnemy = World->SpawnActor<AABaseEnemy>(CombatSettings.enemyEntries[0], SpawnLocation, FRotator::ZeroRotator);
+				int randomIndex = FMath::RandRange(0, CombatSettings.enemyEntries.Num() - 1);
+				AABaseEnemy* NewEnemy = World->SpawnActor<AABaseEnemy>(CombatSettings.enemyEntries[randomIndex], SpawnLocation, FRotator::ZeroRotator);
 				Corridor->SetIsOccupiedByEnemy(true);
-				SpawnedEnemies.Add(NewEnemy);
+				SpawnedEnemies.Add(NewEnemy, FAttackToken());
+				NewEnemy->OnDeath.AddUObject(this, &UAICoordinator::OnEnemyDeath);
 			}
 		}
 	}
 	//Grant first token to a random enemy
-	int randomIndex = FMath::RandRange(0, SpawnedEnemies.Num() - 1);
-	GrantAttackToken(SpawnedEnemies[randomIndex]);
-
+	StartTokenGranting();
 }
 
 void UAICoordinator::ResetToken(FAttackToken& InToken)
@@ -75,28 +78,51 @@ void UAICoordinator::ResetToken(FAttackToken& InToken)
 	InToken.bIsAvailable = true;
 }
 
+void UAICoordinator::StartTokenGranting()
+{
+	UWorld* world = GetWorld();
+	if (world)
+	{
+		const UGameplaySettings* GameplaySettings = GetDefault<UGameplaySettings>();
+
+		FTimerDelegate timerFunction;
+		int randomIndex = FMath::RandRange(0, SpawnedEnemies.Num() - 1);
+		
+		TArray<AABaseEnemy*> Values;
+		SpawnedEnemies.GenerateKeyArray(Values);
+
+		timerFunction.BindUFunction(this, FName("GrantAttackToken"), Values[randomIndex]);
+		world->GetTimerManager().SetTimer(GrantTokenTimerHandle, timerFunction, GameplaySettings->TokenGrantingRate, false);
+	}
+}
+
 
 void UAICoordinator::HandlePostLoadMap(UWorld* World, const FWorldInitializationValues WorldInitializationValues)
 {
 	if (!World) return;
 
 	UE_LOG(LogTemp, Log, TEXT("Level loaded: %s"), *World->GetName());
-
-
 }
 
 void UAICoordinator::OnGrantedTokenConsumed(AABaseEnemy* Enemy)
 {
 	Enemy->OnAttackTokenConsumed.RemoveAll(this);
 	
-	FAttackToken GrantedToken = Enemy->GetAttackToken();
+	FAttackToken& GrantedToken = SpawnedEnemies[Enemy];
 
 	SetTokenInCooldown(GrantedToken);
 	Enemy->OnAttackTokenConsumed.RemoveAll(this);
+}
 
-	GrantedAttackTokens.Remove(GrantedToken);
-	AvailableAttackTokens.Add(GrantedToken);
+void UAICoordinator::OnEnemyDeath(AABaseEnemy* Enemy)
+{
+	Enemy->OnDeath.RemoveAll(this);
 
-	int randomIndex = FMath::RandRange(0, SpawnedEnemies.Num() - 1);
-	GrantAttackToken(SpawnedEnemies[randomIndex]);
+	FAttackToken& GrantedToken = SpawnedEnemies[Enemy];
+
+	SetTokenInCooldown(GrantedToken);
+	Enemy->OnAttackTokenConsumed.RemoveAll(this);
+		
+	SpawnedEnemies.FindAndRemoveChecked(Enemy);
+	Enemy->Destroy();	
 }

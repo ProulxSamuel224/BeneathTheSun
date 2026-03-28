@@ -102,6 +102,11 @@ void ABTSBasePawn::SetAttributeSetChangeDelegates()
 
 }
 
+void ABTSBasePawn::HandleDeath()
+{
+	return;
+}
+
 void ABTSBasePawn::OnHullChanged(const FOnAttributeChangeData& Data)
 {
 	float NewHealth = Data.NewValue;
@@ -110,6 +115,11 @@ void ABTSBasePawn::OnHullChanged(const FOnAttributeChangeData& Data)
 	UE_LOG(LogTemp, Log, TEXT("Health changed from %f to %f"), OldHealth, NewHealth);
 	GEngine->AddOnScreenDebugMessage(3, 10, FColor::Blue, "Old Health" + FString::SanitizeFloat(OldHealth));
 	GEngine->AddOnScreenDebugMessage(4, 10, FColor::Blue, "New Health" + FString::SanitizeFloat(NewHealth));
+
+	if (NewHealth <= 0.0f)
+	{
+		HandleDeath();
+	}
 }
 
 

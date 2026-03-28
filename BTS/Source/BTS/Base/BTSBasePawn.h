@@ -28,10 +28,11 @@ public:
 	UShipAttributeSet* ShipAttributeSet = nullptr;
 
 	
-protected:
+protected: 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	virtual void SetAttributeSetChangeDelegates();
+	virtual void HandleDeath();
 
 private:
 

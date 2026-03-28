@@ -14,6 +14,7 @@
 #include "ABaseEnemy.generated.h"
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnAttackTokenConsumed, AABaseEnemy*)
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnDeath, AABaseEnemy*)
 
 class UBTSAbilitySystemComponent;
 
@@ -42,8 +43,7 @@ public:
 	void OnCollisionHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
 	//AI
-	void SetAttackToken(FAttackToken inToken);
-	FAttackToken GetAttackToken() { return GrantedAttackToken; }
+	void OnTokenGranted();
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	UShapeComponent* CollisionShape = nullptr;
@@ -64,15 +64,15 @@ public:
 	TArray<TSubclassOf<UBTSGameplayAbility>> ActivableAbilities;
 
 	FOnAttackTokenConsumed OnAttackTokenConsumed;
+	FOnDeath OnDeath;
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	virtual void HandleDeath() override;
 
 	UFUNCTION()
 	void SelectAndUseAbility();
-
-	FAttackToken GrantedAttackToken;
 
 private: 
 

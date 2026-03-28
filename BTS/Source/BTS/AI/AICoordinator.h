@@ -23,6 +23,7 @@ public:
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 	virtual void Deinitialize() override;
 
+	UFUNCTION()
 	void GrantAttackToken(AABaseEnemy* Enemy);
 	void SetTokenInCooldown(FAttackToken& InToken);
 	void HandleCombatStart(FCombatSettings CombatSettings, const TArray<AACorridor*>& GameplayCorridors);
@@ -30,16 +31,16 @@ public:
 	//TimerDelegate
 	UFUNCTION()
 	void ResetToken(FAttackToken& InToken);
+	void StartTokenGranting();
 
 private:
 	void HandlePostLoadMap(UWorld* World, const FWorldInitializationValues WorldInitializationValues);
 
 	void OnGrantedTokenConsumed(AABaseEnemy* Enemy);
+	void OnEnemyDeath(AABaseEnemy* Enemy);
 
-	TArray<AABaseEnemy*> SpawnedEnemies;
+	TMap<AABaseEnemy*,FAttackToken> SpawnedEnemies;
 
-	TArray<FAttackToken> AvailableAttackTokens;
-
-	TArray<FAttackToken> GrantedAttackTokens;
+	FTimerHandle GrantTokenTimerHandle;
 	
 };

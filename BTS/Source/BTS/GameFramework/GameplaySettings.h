@@ -34,6 +34,9 @@ public:
 	
 	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = "AI", AdvancedDisplay)
 	float GlobalTokenCooldown = 2.0f;
+	
+	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = "AI", AdvancedDisplay)
+	float TokenGrantingRate = 1.0f;
 
 	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = "AI", AdvancedDisplay)
 	int MaxAIAttackTokens = 3;

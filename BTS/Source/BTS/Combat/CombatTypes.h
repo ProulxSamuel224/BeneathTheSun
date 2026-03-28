@@ -35,7 +35,6 @@ struct FAttackToken
 	}
 
 	bool bIsAvailable = true;
-	bool bIsGranted = false;
 	FTimerHandle CooldownTimerHandle;
 
 private:

@@ -9,7 +9,7 @@
 
 // Sets default values
 AABaseEnemy::AABaseEnemy()
-{
+ {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	AbilitySystemComponent = CreateDefaultSubobject<UBTSAbilitySystemComponent>("AbilitySystemComponent", false);
@@ -49,6 +49,11 @@ void AABaseEnemy::BeginPlay()
 		}
 	}
 	
+}
+
+void AABaseEnemy::HandleDeath()
+{
+	OnDeath.Broadcast(this);
 }
 
 void AABaseEnemy::StartAttackDelay()
@@ -133,8 +138,7 @@ void AABaseEnemy::OnCollisionHit(UPrimitiveComponent* HitComp, AActor* OtherActo
 	GEngine->AddOnScreenDebugMessage(2, 10, FColor::Blue, "Enemy Hit");
 }
 
-void AABaseEnemy::SetAttackToken(FAttackToken inToken)
-{ 
-	GrantedAttackToken = inToken;
+void AABaseEnemy::OnTokenGranted()
+{
 	StartAttackDelay();
 }
