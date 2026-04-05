@@ -51,6 +51,7 @@ void UAICoordinator::SetTokenInCooldown(FAttackToken& InToken)
 
 void UAICoordinator::HandleCombatStart(FCombatSettings CombatSettings, const TArray<AACorridor*>& GameplayCorridors)
 {
+	SpawnedEnemies.Empty();
 	for (AACorridor* Corridor : GameplayCorridors)
 	{
 		if (Corridor != nullptr)

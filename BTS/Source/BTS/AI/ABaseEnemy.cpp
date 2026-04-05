@@ -53,6 +53,13 @@ void AABaseEnemy::BeginPlay()
 
 void AABaseEnemy::HandleDeath()
 {
+	if (GetWorld()->GetTimerManager().IsTimerActive(AttackTimerHandle))
+	{
+		GetWorld()->GetTimerManager().ClearTimer(AttackTimerHandle);
+	}
+
+	AbilitySystemComponent->CancelAbilities();
+	AbilitySystemComponent->ClearAllAbilities();
 	OnDeath.Broadcast(this);
 }
 

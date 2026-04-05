@@ -123,7 +123,7 @@ void APlayerPawn::BeginPlay()
 
 void APlayerPawn::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
-
+	CollisionShape->OnComponentHit.RemoveDynamic(this, &APlayerPawn::OnCollisionHit);
 	Super::EndPlay(EndPlayReason);
 }
 
@@ -155,6 +155,13 @@ void APlayerPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 		}
 
 	}
+}
+
+void APlayerPawn::HandleDeath()
+{
+	//GameOver
+	GEngine->AddOnScreenDebugMessage(2, 10, FColor::Blue, "PlayerPawn Dead");
+	OnDeath.Broadcast(this);
 }
 
 void APlayerPawn::MoveUp(const FInputActionValue& Value)
@@ -235,12 +242,6 @@ void APlayerPawn::OnCollisionHit(UPrimitiveComponent* HitComp, AActor* OtherActo
 {
 	GEngine->AddOnScreenDebugMessage(2, 10, FColor::Blue, "PlayerPawn Hit");
 }
-
-void APlayerPawn::OnPawnDied()
-{
-	GEngine->AddOnScreenDebugMessage(3, 10, FColor::Blue, "PlayerPawn Dead");
-}
-
 
 void APlayerPawn::MoveToLocation(FVector NewLocation)
 {

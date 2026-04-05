@@ -25,6 +25,7 @@ void UUGameManager::SpawnCorridor(const FVector InPosition)
 
 	if (IsValid(World))
 	{
+		GameplayCorridors.Empty();
 		for (int i = 0; i < GameplaySettings->CorridorAmount; i++)
 		{
 			const FActorSpawnParameters SpawnParams;
@@ -68,6 +69,15 @@ void UUGameManager::SpawnPlayer(APlayerPawn* Player)
 		SpawnCorridor->OnCorridorTargetted();
 
 		GEngine->AddOnScreenDebugMessage(1, 10, FColor::Red, "PlayerSpawned");
+
+		APlayerController* PC = GetWorld()->GetFirstPlayerController();
+		if (PC)
+		{
+			FInputModeGameOnly InputMode;
+
+			PC->SetInputMode(InputMode);
+			PC->bShowMouseCursor = false;
+		}
 			
 	}
 }
