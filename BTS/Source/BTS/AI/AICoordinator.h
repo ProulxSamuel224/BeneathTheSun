@@ -2,12 +2,13 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "BTS/Combat/CombatTypes.h"
 #include "ABaseEnemy.h"
 #include "AICoordinator.generated.h"
 
+
+DECLARE_MULTICAST_DELEGATE(FOnAllEnemiesKilled)
 class AACorridor;
 
 /**
@@ -32,6 +33,8 @@ public:
 	UFUNCTION()
 	void ResetToken(FAttackToken& InToken);
 	void StartTokenGranting();
+
+	FOnAllEnemiesKilled OnAllEnemiesKilled;
 
 private:
 	void HandlePostLoadMap(UWorld* World, const FWorldInitializationValues WorldInitializationValues);

@@ -19,6 +19,9 @@ class BTS_API ABTSGameMode_Gameplay : public AGameModeBase
 	UFUNCTION()
 	void OnPlayerDeath(APlayerPawn* PlayerPawn);
 
+	UFUNCTION()
+	void OnAllEnemiesKilled();
+
 	UFUNCTION(BlueprintCallable)
 	void LoadLevel(FName LevelToLoad);
 
@@ -28,6 +31,10 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
 	TSubclassOf<UUserWidget> GameOverWidgetClass;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
+	TSubclassOf<UUserWidget> VictoryWidgetClass;
+
 	UUserWidget* GameOverWidgetInstance;
+	UUserWidget* VictoryWidgetInstance;
 	
 };

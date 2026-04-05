@@ -21,16 +21,14 @@ void ABTSGameMode_Gameplay::BeginPlay()
 	
 	PlayerPawn->OnDeath.AddUObject(this, &ABTSGameMode_Gameplay::OnPlayerDeath);
 	GameManager->SpawnPlayer(PlayerPawn);
-
 	
 	AICoordinator->HandleCombatStart(GameplaySettings->DefaultCombatSettings, GameManager->GetGameplayCorridors());
-
+	AICoordinator->OnAllEnemiesKilled.AddUObject(this, &ABTSGameMode_Gameplay::OnAllEnemiesKilled);
 }
 
-void ABTSGameMode_Gameplay::OnPlayerDeath(APlayerPawn* PlayerPawn)
+void ABTSGameMode_Gameplay::OnPlayerDeath(APlayerPawn* PlayerPawn)  
 {
 	UGameplayStatics::SetGamePaused(GetWorld(), true);
-
 
 	if (GameOverWidgetClass)
 	{
@@ -50,6 +48,35 @@ void ABTSGameMode_Gameplay::OnPlayerDeath(APlayerPawn* PlayerPawn)
 		if (GameOverWidgetInstance)
 		{
 			InputMode.SetWidgetToFocus(GameOverWidgetInstance->TakeWidget());
+		}
+
+		PC->SetInputMode(InputMode);
+		PC->bShowMouseCursor = true;
+	}
+}
+
+void ABTSGameMode_Gameplay::OnAllEnemiesKilled()
+{
+	UGameplayStatics::SetGamePaused(GetWorld(), true);
+
+	if (VictoryWidgetClass)
+	{
+		VictoryWidgetInstance = CreateWidget<UUserWidget>(GetWorld(), VictoryWidgetClass);
+		if (VictoryWidgetInstance)
+		{
+			VictoryWidgetInstance->AddToViewport();
+		}
+	}
+
+	APlayerController* PC = GetWorld()->GetFirstPlayerController();
+	if (PC)
+	{
+		FInputModeUIOnly InputMode;
+
+		// Optional: specify which widget to focus
+		if (VictoryWidgetInstance)
+		{
+			InputMode.SetWidgetToFocus(VictoryWidgetInstance->TakeWidget());
 		}
 
 		PC->SetInputMode(InputMode);

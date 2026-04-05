@@ -21,16 +21,19 @@ void UAICoordinator::Deinitialize()
 
 void UAICoordinator::GrantAttackToken(AABaseEnemy* Enemy)
 {
-	FAttackToken& token = SpawnedEnemies[Enemy];
-	if(token.bIsAvailable)
+	if (SpawnedEnemies.Contains(Enemy))
 	{
-		token.bIsAvailable = false;
-		Enemy->OnTokenGranted();
-		Enemy->OnAttackTokenConsumed.AddUObject(this, &UAICoordinator::OnGrantedTokenConsumed);
-	}
-	else
-	{
-		token.bIsAvailable = true;
+		FAttackToken& token = SpawnedEnemies.FindChecked(Enemy);
+		if (token.bIsAvailable)
+		{
+			token.bIsAvailable = false;
+			Enemy->OnTokenGranted();
+			Enemy->OnAttackTokenConsumed.AddUObject(this, &UAICoordinator::OnGrantedTokenConsumed);
+		}
+		else
+		{
+			token.bIsAvailable = true;
+		}
 	}
 
 	StartTokenGranting();
@@ -125,5 +128,10 @@ void UAICoordinator::OnEnemyDeath(AABaseEnemy* Enemy)
 	Enemy->OnAttackTokenConsumed.RemoveAll(this);
 		
 	SpawnedEnemies.FindAndRemoveChecked(Enemy);
-	Enemy->Destroy();	
+	Enemy->Destroy();
+
+	if (SpawnedEnemies.IsEmpty())
+	{
+		OnAllEnemiesKilled.Broadcast();
+	}
 }
